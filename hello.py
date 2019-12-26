@@ -13,42 +13,61 @@ from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
 
-db_file = os.path.join(os.path.dirname(__file__), 'test.db')
-if os.path.isfile(db_file):
-    os.remove(db_file)
+keystr = r'^E(?!1206)'
+#keystr = r'(?<!1206)_.*'
+test_str1 = 'E1206_201300'
+test_str2 = 'E1203_201300'
+test_str3 = 'E206_201300'
 
-# 初始数据:
-conn = sqlite3.connect(db_file)
-cursor = conn.cursor()
-cursor.execute('create table user(id varchar(20) primary key, name varchar(20), score int)')
-cursor.execute(r"insert into user values ('A-001', 'Adam', 95)")
-cursor.execute(r"insert into user values ('A-002', 'Bart', 62)")
-cursor.execute(r"insert into user values ('A-003', 'Lisa', 78)")
-cursor.close()
-conn.commit()
-conn.close()
+if re.search(keystr,test_str1):
+    print("str1")
+if re.search(keystr,test_str2):
+    print("str2")
+if re.search(keystr,test_str3):
+    print("str3")
 
-def get_score_in(low, high):
-    ' 返回指定分数区间的名字，按分数从低到高排序 '
-    sqlstr = 'select name from user where score >= %s and score <= %s order by score' % (low, high)
-    conn = sqlite3.connect(db_file)
-    cursor = conn.cursor()
-    cursor.execute(sqlstr)
-    res = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    #print(res)
-    resL = []
-    for line in res:
-        resL.append(line[0])
-    return resL
+keystr2 = r'test(?!\.php$)'
+test_str = 'test.php1'
+if re.search(keystr2,test_str):
+    print("ok")
 
-# 测试:
-assert get_score_in(80, 95) == ['Adam'], get_score_in(80, 95)
-assert get_score_in(60, 80) == ['Bart', 'Lisa'], get_score_in(60, 80)
-assert get_score_in(60, 100) == ['Bart', 'Lisa', 'Adam'], get_score_in(60, 100)
 
-print('Pass')
+#db_file = os.path.join(os.path.dirname(__file__), 'test.db')
+#if os.path.isfile(db_file):
+#    os.remove(db_file)
+#
+## 初始数据:
+#conn = sqlite3.connect(db_file)
+#cursor = conn.cursor()
+#cursor.execute('create table user(id varchar(20) primary key, name varchar(20), score int)')
+#cursor.execute(r"insert into user values ('A-001', 'Adam', 95)")
+#cursor.execute(r"insert into user values ('A-002', 'Bart', 62)")
+#cursor.execute(r"insert into user values ('A-003', 'Lisa', 78)")
+#cursor.close()
+#conn.commit()
+#conn.close()
+#
+#def get_score_in(low, high):
+#    ' 返回指定分数区间的名字，按分数从低到高排序 '
+#    sqlstr = 'select name from user where score >= %s and score <= %s order by score' % (low, high)
+#    conn = sqlite3.connect(db_file)
+#    cursor = conn.cursor()
+#    cursor.execute(sqlstr)
+#    res = cursor.fetchall()
+#    cursor.close()
+#    conn.close()
+#    #print(res)
+#    resL = []
+#    for line in res:
+#        resL.append(line[0])
+#    return resL
+#
+## 测试:
+#assert get_score_in(80, 95) == ['Adam'], get_score_in(80, 95)
+#assert get_score_in(60, 80) == ['Bart', 'Lisa'], get_score_in(60, 80)
+#assert get_score_in(60, 100) == ['Bart', 'Lisa', 'Adam'], get_score_in(60, 100)
+#
+#print('Pass')
 
 #def _format_addr(s):
 #    name, addr = parseaddr(s)
