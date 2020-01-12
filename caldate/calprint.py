@@ -38,118 +38,127 @@ SX = (u'猴', u'鸡', u'狗', u'猪', u'鼠', u'牛',
 
 class Festival():
     #国历节日 *表示放假日
-    def solar_Fstv(solar_month, solar_day):
+    @staticmethod
+    def solar_Fstv(solar_month, solar_day, oneOut=False):
         sFtv = [
-        "0101#元旦节#",
-        "0202#世界湿地日#",
-        "0210#国际气象节#",
+        "0101#元旦#",
+        #"0202#世界湿地日#",
+        #"0210#国际气象节#",
         "0214#情人节#",
-        "0301#国际海豹日#",
-        "0303#全国爱耳日#",
-        "0305#学雷锋纪念日#",
+        #"0301#国际海豹日#",
+        #"0303#全国爱耳日#",
+        #"0305#学雷锋纪念日#",
         "0308#妇女节#",
-        "0312#植树节# #孙中山逝世纪念日#",
-        "0314#国际警察日#",
-        "0315#消费者权益日#",
-        "0317#中国国医节# #国际航海日#",
-        "0321#世界森林日# #消除种族歧视国际日# #世界儿歌日#",
-        "0322#世界水日#",
-        "0323#世界气象日#",
-        "0324#世界防治结核病日#",
-        "0325#全国中小学生安全教育日#",
-        "0330#巴勒斯坦国土日#",
-        "0401#愚人节# #全国爱国卫生运动月(四月)# #税收宣传月(四月)#",
-        "0407#世界卫生日#",
-        "0422#世界地球日#",
-        "0423#世界图书和版权日#",
-        "0424#亚非新闻工作者日#",
+        #"0312#植树节# #孙中山逝世纪念日#",
+        "0312#植树节#",
+        #"0314#国际警察日#",
+        #"0315#消费者权益日#",
+        #"0317#中国国医节# #国际航海日#",
+        #"0321#世界森林日# #消除种族歧视国际日# #世界儿歌日#",
+        #"0322#世界水日#",
+        #"0323#世界气象日#",
+        #"0324#世界防治结核病日#",
+        #"0325#全国中小学生安全教育日#",
+        #"0330#巴勒斯坦国土日#",
+        #"0401#愚人节# #全国爱国卫生运动月(四月)# #税收宣传月(四月)#",
+        "0401#愚人节#",
+        #"0407#世界卫生日#",
+        #"0422#世界地球日#",
+        #"0423#世界图书和版权日#",
+        #"0424#亚非新闻工作者日#",
         "0501#劳动节#",
         "0504#青年节#",
-        "0505#碘缺乏病防治日#",
-        "0508#世界红十字日#",
-        "0512#国际护士节#",
-        "0515#国际家庭日#",
-        "0517#国际电信日#",
-        "0518#国际博物馆日#",
-        "0520#全国学生营养日#",
-        "0523#国际牛奶日#",
-        "0531#世界无烟日#",
-        "0601#国际儿童节#",
-        "0605#世界环境保护日#",
-        "0606#全国爱眼日#",
-        "0617#防治荒漠化和干旱日#",
-        "0623#国际奥林匹克日#",
-        "0625#全国土地日#",
-        "0626#国际禁毒日#",
-        "0701#中国共·产党诞辰# #香港回归纪念日# #世界建筑日#",
-        "0702#国际体育记者日#",
-        "0707#抗日战争纪念日#",
-        "0711#世界人口日#",
-        "0730#非洲妇女日#",
+        #"0505#碘缺乏病防治日#",
+        #"0508#世界红十字日#",
+        #"0512#国际护士节#",
+        #"0515#国际家庭日#",
+        #"0517#国际电信日#",
+        #"0518#国际博物馆日#",
+        #"0520#全国学生营养日#",
+        #"0523#国际牛奶日#",
+        #"0531#世界无烟日#",
+        "0601#儿童节#",
+        #"0605#世界环境保护日#",
+        #"0606#全国爱眼日#",
+        #"0617#防治荒漠化和干旱日#",
+        #"0623#国际奥林匹克日#",
+        #"0625#全国土地日#",
+        #"0626#国际禁毒日#",
+        #"0701#中国共·产党诞辰# #香港回归纪念日# #世界建筑日#",
+        #"0702#国际体育记者日#",
+        #"0707#抗日战争纪念日#",
+        #"0711#世界人口日#",
+        #"0730#非洲妇女日#",
         "0801#建军节#",
-        "0808#中国男子节(爸爸节)#",
-        "0815#抗日战争胜利纪念#",
-        "0908#国际扫盲日# #国际新闻工作者日#",
-        "0909#毛·泽东逝世纪念#",
-        "0910#中国教师节#",
-        "0914#世界清洁地球日#",
-        "0916#国际臭氧层保护日#",
-        "0918#九·一八事变纪念日#",
-        "0920#国际爱牙日#",
-        "0927#世界旅游日#",
-        "0928#孔子诞辰#",
-        "1001#国庆节# #世界音乐日# #国际老人节#",
-        "1002#国庆节假日# #国际和平与民主自由斗争日#",
-        "1003#国庆节假日#",
-        "1004#世界动物日#",
-        "1006#老人节#",
-        "1008#全国高血压日# #世界视觉日#",
-        "1009#世界邮政日# #万国邮联日#",
-        "1010#辛亥革命纪念日# #世界精神卫生日#",
-        "1013#世界保健日# #国际教师节#",
-        "1014#世界标准日#",
-        "1015#国际盲人节(白手杖节)#",
-        "1016#世界粮食日#",
-        "1017#世界消除贫困日#",
-        "1022#世界传统医药日#",
-        "1024#联合国日#",
-        "1031#世界勤俭日#",
-        "1107#十月社会主义革命纪念日#",
-        "1108#中国记者日#",
-        "1109#全国消防安全宣传教育日#",
-        "1110#世界青年节#",
-        "1111#国际科学与和平周(本日所属的一周)#",
-        "1112#孙中山诞辰纪念日#",
-        "1114#世界糖尿病日#",
-        "1116#国际宽容日#",
-        "1117#国际大学生节# #世界学生节#",
-        "1120#彝族年#",
-        "1121#彝族年# #世界问候日# #世界电视日#",
-        "1122#彝族年#",
-        "1129#国际声援巴勒斯坦人民国际日#",
-        "1201#世界艾滋病日#",
-        "1203#世界残疾人日#",
-        "1205#国际经济和社会发展志愿人员日#",
-        "1208#国际儿童电视日#",
-        "1209#世界足球日#",
-        "1210#世界人权日#",
-        "1212#西安事变纪念日#",
-        "1213#南京大屠杀(1937年)纪念日#",
-        "1220#澳门回归纪念#",
-        "1221#国际篮球日#",
+        #"0808#中国男子节(爸爸节)#",
+        #"0815#抗日战争胜利纪念#",
+        #"0908#国际扫盲日# #国际新闻工作者日#",
+        #"0909#毛·泽东逝世纪念#",
+        "0910#教师节#",
+        #"0914#世界清洁地球日#",
+        #"0916#国际臭氧层保护日#",
+        #"0918#九·一八事变纪念日#",
+        #"0920#国际爱牙日#",
+        #"0927#世界旅游日#",
+        #"0928#孔子诞辰#",
+        #"1001#国庆节# #世界音乐日# #国际老人节#",
+        "1001#国庆节#",
+        #"1002#国庆节假日# #国际和平与民主自由斗争日#",
+        #"1003#国庆节假日#",
+        #"1004#世界动物日#",
+        #"1006#老人节#",
+        #"1008#全国高血压日# #世界视觉日#",
+        #"1009#世界邮政日# #万国邮联日#",
+        #"1010#辛亥革命纪念日# #世界精神卫生日#",
+        #"1013#世界保健日# #国际教师节#",
+        #"1014#世界标准日#",
+        #"1015#国际盲人节(白手杖节)#",
+        #"1016#世界粮食日#",
+        #"1017#世界消除贫困日#",
+        #"1022#世界传统医药日#",
+        #"1024#联合国日#",
+        #"1031#世界勤俭日#",
+        #"1107#十月社会主义革命纪念日#",
+        #"1108#中国记者日#",
+        #"1109#全国消防安全宣传教育日#",
+        #"1110#世界青年节#",
+        #"1111#国际科学与和平周(本日所属的一周)#",
+        #"1112#孙中山诞辰纪念日#",
+        #"1114#世界糖尿病日#",
+        #"1116#国际宽容日#",
+        #"1117#国际大学生节# #世界学生节#",
+        #"1120#彝族年#",
+        #"1121#彝族年# #世界问候日# #世界电视日#",
+        #"1122#彝族年#",
+        #"1129#国际声援巴勒斯坦人民国际日#",
+        #"1201#世界艾滋病日#",
+        #"1203#世界残疾人日#",
+        #"1205#国际经济和社会发展志愿人员日#",
+        #"1208#国际儿童电视日#",
+        #"1209#世界足球日#",
+        #"1210#世界人权日#",
+        #"1212#西安事变纪念日#",
+        #"1213#南京大屠杀(1937年)纪念日#",
+        #"1220#澳门回归纪念#",
+        #"1221#国际篮球日#",
         "1224#平安夜#",
         "1225#圣诞节#",
-        "1226#毛·泽东诞辰纪念日#"
+        #"1226#毛·泽东诞辰纪念日#"
         ]
-        solar_month_str = str(solar_month) if solar_month > 9 else "0" + str(solar_month)
-        solar_day_str = str(solar_day) if solar_day > 9 else "0" + str(solar_day)
-        pattern = "(" + solar_month_str + solar_day_str + ")([\w+?\#?\(?\)?\d+\s?·?]*)"
+        #solar_month_str = str(solar_month) if solar_month > 9 else "0" + str(solar_month)
+        #solar_day_str = str(solar_day) if solar_day > 9 else "0" + str(solar_day)
+        #pattern = r"(" + solar_month_str + solar_day_str + r")([\w+?\#?\(?\)?\d+\s?·?]*)"
+        pattern = r'(' + solar_month + solar_day + r')([\w+?\#?\(?\)?\d+\s?·?]*)'
         for solar_fstv_item in sFtv:
             result = re.search(pattern, solar_fstv_item)
             if result is not None:
-                return result.group(2)
+                if solar_month + solar_day == result.group(1):
+                    if oneOut:
+                        return result.group(2).split('#')[1].strip()
+                    return result.group(2)
+        return None
 
-
+    @staticmethod
     def lunar_Fstv(lunar_month, lunar_day):
         #农历节日 *表示放假日
         #每年单独来算
@@ -169,13 +178,14 @@ class Festival():
         ]
         lunar_month_str = str(lunar_month) if lunar_month > 9 else "0" + str(lunar_month)
         lunar_day_str = str(lunar_day) if lunar_day > 9 else "0" + str(lunar_day)
-        pattern = "(" + lunar_month_str + lunar_day_str + ")([\w+?\#?\s?]*)"
+        pattern = r"(" + lunar_month_str + lunar_day_str + r")([\w+?\#?\s?]*)"
         for lunar_fstv_item in lFtv:
             result = re.search(pattern, lunar_fstv_item)
             if result is not None:
                 return result.group(2)
 
     #国历节日 *表示放假日
+    @staticmethod
     def weekday_Fstv(solar_month, solar_day, solar_weekday):
         #某月的第几个星期几
         wFtv = [
@@ -196,18 +206,17 @@ class Festival():
         #计算当前日属于第几周，得出来从0开始计周，再向后偏移1
         weekday_ordinal = solar_day // 7 + offset + 1
 
-        solar_month_str = str(solar_month) if solar_month > 9 else "0" + str(solar_month)
+        #solar_month_str = str(solar_month) if solar_month > 9 else "0" + str(solar_month)
         solar_weekday_str = str(weekday_ordinal) + str(solar_weekday)
-
-        pattern = "(" + solar_month_str + solar_weekday_str + ")([\w+?\#?\s?]*)"
+        #pattern = r"(" + solar_month_str + solar_weekday_str + r")([\w+?\#?\s?]*)"
+        pattern = r"(" + solar_month + solar_weekday_str + r")([\w+?\#?\s?]*)"
         for weekday_fstv_item in wFtv:
             result = re.search(pattern, weekday_fstv_item)
             if result is not None:
                 return result.group(2)
 
-        #如何计算某些最后一个星期几的情况，..........
-
     #24节气
+    @staticmethod
     def solar_Term(solar_month, solar_day):
         #每年数据不一样，此为2012年内的数据
         stFtv = [
@@ -236,9 +245,10 @@ class Festival():
         "1206#大雪#",
         "1221#冬至#",
         ]
-        solar_month_str = str(solar_month) if solar_month > 9 else "0" + str(solar_month)
-        solar_day_str = str(solar_day) if solar_day > 9 else "0" + str(solar_day)
-        pattern = "(" + solar_month_str + solar_day_str + ")([\w+?\#?]*)"
+        #solar_month_str = str(solar_month) if solar_month > 9 else "0" + str(solar_month)
+        #solar_day_str = str(solar_day) if solar_day > 9 else "0" + str(solar_day)
+        #pattern = r"(" + solar_month_str + solar_day_str + r")([\w+?\#?]*)"
+        pattern = r"(" + solar_month + solar_day + r")([\w+?\#?]*)"
         for solarTerm_fstv_item in stFtv:
             result = re.search(pattern, solarTerm_fstv_item)
             if result is not None:
@@ -257,7 +267,8 @@ def initdb():
                     date TEXT UNIQUE,
                     lunardate TEXT,
                     holiday TEXT,
-                    jieqi TEXT)''')
+                    jieqi TEXT,
+                    legalday TEXT)''')
     conn.commit()
     db.close()
 
@@ -279,6 +290,13 @@ def query_db(query, args=(), one=False):
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
+
+def update_db(uSql, args=()):
+    conn = sqlite3.connect(DB_FILE)
+    db = conn.cursor()
+    db.execute(uSql, args)
+    conn.commit()
+    conn.close()
 
 def getJieQi():
     sql = 'select jieqi from ical where jieqi NOT NULL limit 28'
@@ -338,6 +356,7 @@ def analyseHkoData(content):
             else:
                 db.execute(sql_nojq, (dt, fds[1]))
     conn.commit()
+    conn.close()
 
 def delData(year):
     sql = "delete from ical where date like '%s%%'"  % year
@@ -374,6 +393,7 @@ def post_process():
     for d in HK_ERROR:
         db.execute(sql_update, (u'三十', d))
     conn.commit()
+    conn.close()
 
 def update_holiday():
     ''' write chinese traditional holiday to db
@@ -430,6 +450,64 @@ def update_holiday():
     for arg in args:
         db.execute(sql_update, (arg[1], arg[0]))
     conn.commit()
+    conn.close()
+
+def analyseLegalDay(legalstr):
+    regstr1 = r'^[0-9][0-9]-[0-9][0-9]$'
+    regstr2 = r'^[0-9][0-9]-[0-9][0-9]~[0-9][0-9]-[0-9][0-9]$'
+    retL = list()
+    splitL1 = legalstr.split(',')
+    for sp1 in splitL1:
+        if re.search(regstr1, sp1.strip()) or re.search(regstr2, sp1.strip()):
+            retL.append(sp1.strip())
+        #else:
+        #    splitL2 = sp1.split('~')
+        #    if re.search(regstr, splitL2[0].strip()) and re.search(regstr, splitL2[1].strip()):
+        #        start = int(splitL2[0].strip()[3:4])
+        #        end = start = int(splitL2[1].strip()[3:4]) + 1
+        #        for i in range(start, end):
+        #            
+        #            retL.append(sp2.strip())
+    return retL
+
+def updateLegalDay():
+    regstr = r'^h[\d]{4,4}.txt'
+    regline = r'^(\d):([\d\-,~]+):([\d\-,~]*)'
+    legalDict = dict()
+    fileL = os.listdir(os.path.join(APPDIR, 'db'))
+    for f in fileL:
+        fpath = os.path.join(APPDIR, 'db', f)
+        if os.path.isfile(fpath) and re.search(regstr, f):
+            year = f[1:5]
+            with open(fpath, 'r') as fi:
+                legalDays = list()
+                legalAdjust = list()
+                lines = fi.readlines()
+                for line in lines:
+                    ma = re.search(regline, line)
+                    if ma:
+                        legalDays.extend(analyseLegalDay(ma.group(2)))
+                        legalAdjust.extend(analyseLegalDay(ma.group(3)))
+                legalDict[year] = [legalDays, legalAdjust]
+    #print(legalDict)
+    for key, value in legalDict.items():
+        uSql = "update ical set legalday=NULL where date like '%s%%'" % (key)
+        update_db(uSql)
+        for day in value[0]:
+            sp = day.split('~')
+            uSql = "update ical set legalday='1' where date='%s'" % (key + '-' + sp[0])
+            if len(sp) == 2:
+                uSql = "update ical set legalday='1' where date >= '%s' and date <= '%s'" % (key + '-' + sp[0], key + '-' + sp[1])
+            update_db(uSql)
+            #print(uSql)
+        for day in value[1]:
+            sp = day.split('~')
+            uSql = "update ical set legalday='2' where date='%s'" % (key + '-' + sp[0])
+            if len(sp) == 2:
+                uSql = "update ical set legalday='2' where date >= '%s' and date <= '%s'" % (key + '-' + sp[0], key + '-' + sp[1])
+            update_db(uSql)
+            #print(uSql)
+    print("更新法定节假日完成。")
 
 def getGanzhi(lyear):
     '''generate 干支年份
@@ -494,7 +572,7 @@ def outOneMonth(isodate):
 
     print(isodate[:4] + "年 " + lunarYear + " 当前时间[" + isodate[5:] + " " + week + "]")
 
-    sql = "select date,lunardate,holiday,jieqi from ical where date like '%s%%'"  % isodate[:8]
+    sql = "select date,lunardate,holiday,jieqi,legalday from ical where date like '%s%%'"  % isodate[:8]
     rows = query_db(sql)
 
     firstL = ""
@@ -529,11 +607,30 @@ def outOneMonth(isodate):
                     #tmpL.append("{:^10}".format(rows[d][0][8:]))
                     oneline = oneline + "{:^10}".format(rows[d][0][8:])
                     lunarFormat = "{:^%d}" % (10 - len(rows[d][1]))
+                    jieqiFlag = False
                     if rows[d][2]:
                         lunarLine = lunarLine + lunarFormat.format(rows[d][2])
+                        jieqiFlag = True
                     else:
-                        lunarLine = lunarLine + lunarFormat.format(rows[d][1])
-                    if rows[d][3]:
+                        #dstr = str(d+1) if d + 1 > 9 else "0" + str(d+1)
+                        res = Festival.solar_Fstv(rows[d][0][5:7], rows[d][0][8:10], True)
+                        if res:
+                            lunarFormat = "{:^%d}" % (10 - len(res))
+                            lunarLine = lunarLine + lunarFormat.format(res)
+                            jieqiFlag = True
+                        elif rows[d][3]:
+                            lunarFormat = "{:^%d}" % (10 - len(rows[d][3]))
+                            lunarLine = lunarLine + lunarFormat.format(rows[d][3])
+                        else:
+                            lunarLine = lunarLine + lunarFormat.format(rows[d][1])
+                    
+                    if rows[d][4]:
+                        if int(rows[d][4]) == 1:
+                            jieqiLine = jieqiLine + "{:^9}".format('休')
+                        else:
+                            jieqiLine = jieqiLine + "{:^9}".format('班')
+                    elif rows[d][3] and jieqiFlag:
+                        lunarFormat = "{:^%d}" % (10 - len(rows[d][3]))
                         jieqiLine = jieqiLine + lunarFormat.format(rows[d][3])
                     else:
                         jieqiLine = jieqiLine + "{:^10}".format("")
@@ -565,7 +662,9 @@ def main():
         sys.exit()
     
     outOneMonth(now)
+    #updateLegalDay()
 
+    #print(Festival.solar_Fstv(now[5:2], now[8:2], True))
     #print("公历 : " + now)
     #year = getLunarYear(now)
     #week = getWeekDay(now, True)

@@ -149,7 +149,7 @@ class xdr_analyse:
             for xdr in xdrlist:
                 flag = False
                 for i, regd in enumerate(self.xdr_regstr):
-                    #print regstr
+                    #print regd.regstr
                     res = re.search(regd.regstr, xdr)
                     if res:
                         grps = res.groups()
@@ -172,11 +172,13 @@ class xdr_analyse:
                             if regd.i_dr != 0:
                                 xdr_type = grps[regd.i_dr - 1]
                         
+                        #print xdr_content
                         contentList.append((xdr_type, regd, xdr, xdr_content))
                         flag = True
                         break
                 if not flag:
                     regd = regdef()
+                    #print xdr
                     contentList.append(("None", regd, xdr, xdr))
                 #if re.search(r'obbs:S:1.3:{{', xdr):
                 #    res = re.search(r'}},dr_[_\w]+;(.*)}}', xdr)
