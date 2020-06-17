@@ -1,5 +1,4 @@
 XDR_FIELD_NAME,XDR_DR_TYPE,XDR_FIELD_TYPE,XDR_FIELD_INDEX
-"SDS[0-9]{{.*?}},dr_[_\w]+,(dr_[_\w]+);(.*)}}",regstr,0,0
 ACCESS_POINT_NAME,dr_up_iismp,4,33
 ACCOUNT_BLANCE,dr_rent,1,65
 ACCOUNT_BLANCE,dr_wlan,4,84

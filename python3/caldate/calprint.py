@@ -529,6 +529,7 @@ def getLunarYear(isodate):
     row = query_db(sql, (isodate,), one=True)
     res = 'Unknown'
     if row:
+        # print(row[0][:4])
         res = getGanzhi(row[0][:4])
     return res
 
