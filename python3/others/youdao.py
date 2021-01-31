@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys, re, os, copy, datetime
-#from readability import Document
-#import richxerox
+import sys
+from readability import Document
 import urllib.parse
+#import urllib.request
 import requests
+import richxerox
 
-def getHtml(dest_url):
+def getHtmlToClipboard(dest_url):
     html_headers = {
-            #"Host": "note.youdao.com",
+            "Host": "note.youdao.com",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
             #"Accept-Encoding": "gzip, deflate, br",
@@ -27,45 +28,24 @@ def getHtml(dest_url):
         #html_text = html_respone.read().decode("utf-8")
 
         html_respone = requests.get(dest_url, headers=html_headers)
-        print(html_respone)
-        #html_text = html_respone.text
+        #print(html_respone.text)
+        html_text = html_respone.text
+
+        html_doc = Document(html_text)
+        richxerox.pasteboard.set_contents(html=html_doc.summary())
+        richxerox.copy(html=html_doc.summary())
     except Exception:
         return False
     else:
         return True
+    
+#url = 'https://blog.csdn.net/cugb1004101218/article/details/46501461'
+#getHtmlToClipboard(url)
 
-#print(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"))
-#
-#a = '01-24~01-30'
-#b = '01-19,01-23'
-#c = '01-24~01-30, 01-19,01-23'
-#
-#print(a.split(','))
-#print(a.split(',')[0].split('~'))
-#
-#c = [1,2]
-#a = [1,2,3,c]
-#b = a[3]
-#d = copy.copy(a)
-#print(a,b,c,d)
-#b[1] = 1
-#print(a,b,c,d)
-#c[1] = 3
-#print(a,b,c,d)
-#x = 1
-#y = x
-#print(x,y)
-#y = 3
-#print(x,y)
+ret = False
+dest_url = ""
+ret = getHtmlToClipboard(dest_url)
 
-#url = 'https://blog.csdn.net/qq_38410730/article/details/80500920'
-#
-#html = urllib.request.urlopen(url).read().decode('utf-8')
-##print(html)
-#doc = Document(html)
-#print(doc.title())
-#print(doc.summary())
-#richxerox.pasteboard.set_contents(html=doc.summary())
+res = "Getting Successfull." if ret else "Getting Failed."
 
-url = 'https://www.hackthebox.eu/api/invite/generate'
-getHtml(url)
+print(res)

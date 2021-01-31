@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import os, string, random, copy
+#import pickle, json
+
+class AttrDisplay:
+    def gatherAttrs(self):
+        return ",".join("{}={}"
+                .format(k, getattr(self, k))
+                for k in self.__dict__.keys())
+        # attrs = []
+        # for k in self.__dict__.keys():
+        #   item = "{}={}".format(k, getattr(self, k))
+        #   attrs.append(item)
+        # return attrs
+        # for k in self.__dict__.keys():
+        #   attrs.append(str(k) + "=" + str(self.__dict__[k]))
+        # return ",".join(attrs) if len(attrs) else 'no attr' 
+    
+    def __str__(self):
+        return "[{}:{}]".format(self.__class__.__name__, self.gatherAttrs())
+
+#class sdlNode(AttrDisplay):
+class sdlNode:
+    """
+    结点结构说明：
+
+    :param tag: 结点标记，唯一值，传入None时自行计算，作为判断是否同一个结点的依据
+    
+    :param parent: 父结点
+    
+    :param children: 子节点，类型：list
+    
+    :param data: 数据域，存储结点数据，类型可自定义
+    
+    :param index: 子节点序号，类型：int.
+    """
+
+    def __init__(self, tag=None, parent=None, children=None, data=None, index=None):
+        """
+        Node Struct：
+        :param tag: Node label, unique value, passed into 'None' to calculate by itself,as the basis for judging whether the node is the same or not.
+        :param parent: parent node
+        :param children: child nodes,type is list
+        :param data: data domain，saved node's data，the type can be defined yourself.
+        :param index: child node index, type is int.
+        """
+        if children is None:
+            children = []
+        self.tag = tag if tag is not None else ''.join(random.sample(string.ascii_letters + string.digits, 8))
+        self.index = index
+        self.parent = parent
+        self.children = children
+        self.data = data
+    
+    def __str__(self):
+        attrdict = ",".join("{}={}".format(k, getattr(self, k)) for k in self.__dict__.keys())
+        
+        return "[{}:{}]".format(self.__class__.__name__, attrdict)
+
+    def __deepcopy__(self, memo):
+        if memo is None:
+            memo = {}
+        result = self.__class__()
+        memo[id(self)] = result
+        result.parent = self.parent
+        result.index = self.index
+
+        result.data = copy.deepcopy(self.data)
+        for node in self.children:
+            result.children.append(copy.deepcopy(node))
+        for i, node in enumerate(result.children):
+            result.children[i].parent = result
+        return result
+
+    def Empty(self):
+        '''indicate the node if has data'''
+        if self.data is None or len(self.data) == 0:
+            return True
+        return False
+
+    def insertNode(self, dest_node):
+        '''insert a child'''
+        dest_node.parent = self
+        dest_node.index = len(self.children)
+        self.children.append(dest_node)
+    
+    def insertNodeList(self, dest_node_list):
+        '''insert the child by a node list'''
+        node_len = len(dest_node_list)
+        for i in range(node_len):
+            dest_node_list[i].parent = self
+            dest_node_list[i].index = len(self.children)
+            self.children.append(dest_node_list[i])
+    
+    def removeNode(self, dest_node):
+        '''delete the child'''
+        for i, node in enumerate(self.children):
+            if self.children[i].tag == dest_node.tag:
+                del self.children[i]
+                break
+        for j in range(i, len(self.children)):
+            self.children[j].index = j
+
+    def removeNodeByIndex(self, node_index):
+        '''delete the child node by index'''
+        del self.children[node_index]
+        for j in range(node_index, len(self.children)):
+            self.children[j].index = j
+
+    def removeAllNodes(self):
+        '''clear the children'''
+        self.children.clear()
+
+    def clearAll(self):
+        '''clear all the data'''
+        self.parent = None
+        self.index = None
+        self.children.clear()
+        self.data.clear()
+
+    @property
+    def path(self):
+        """return path string (from root parent to current node)"""
+        if self.parent:
+            return '%s %s' % (self.parent.path.strip(), self.tag)
+        return self.tag
+
+    def isExist(self, dest_node):
+        '''
+        Return:
+        (ret, path)
+        -1: Not Exist
+        0: the node self
+        1: exist in the children
+        path: from root parent to the match node
+        '''
+        if self.tag == dest_node.tag:
+                return 0, self.path
+        for i, node in enumerate(self.children):
+            if self.children[i].tag == dest_node.tag:
+                return 1, self.children[i].path
+            if len(self.children[i].children) > 0:
+                return self.children[i].isExist(dest_node)
+        return -1, None
+
+    def dumps(self, indent=0):
+        """print the node string as a tree"""
+        tab = '    ' * (indent - 1) + ' |- ' if indent > 0 else ''
+        print('%s%s' % (tab, self.tag))
+        for obj in self.children:
+            obj.printTag(indent + 1)

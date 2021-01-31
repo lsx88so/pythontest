@@ -1,0 +1,3010 @@
+// xdr.sdl
+#ifndef XDR_DEF_H
+#define XDR_DEF_H
+module	MXdr
+{
+	
+    //*************************************************************************//
+	//* BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN *//
+	//*************************************************************************//
+
+	///////////////////////////////////////////////////////////////////////////
+	//                                                                       //
+	//                                                                       //
+	//                这部分是业务分析分析好后传进来的数据                   //
+	//                SInBusinessAnalyseXdr                                  //
+	//                                                                       //
+	//                                                                       //
+	///////////////////////////////////////////////////////////////////////////
+	// 促销参数定义
+	// [Key1=VALUE1]
+	struct SPromParam
+	{
+		int32  key;
+		string<32> value;
+	}
+	//!edit  以后应该修改成map类
+	map aimap<int32,SPromParam> SPromParamMap;
+	
+	//产品规格参数组		
+	map aimap<int64,SPromParamMap> SPromParamMapMap;  //key：groupId value：SPromParamMap
+	
+	list vector<int32> Int32List; 
+	
+	map aimap<int32,int32> I2iMap;  //wangjing20120726ADD
+
+	
+	// 分账规则
+	// [业务分账规则,门限值]
+	struct SSubPayforRule
+	{
+		int32 rule_id;              //!业务分账规则
+	    int32 numerator;            //!比例分子
+		int32 denominator;          //!比例分母
+		int64 threshold;            //!代付门限值		
+		//ADD
+		int64 payfor_threshold;     //!代付对象提醒门限值
+		//ADD
+		int32 alarm_id;             //! 提醒规则
+		//ADD
+		int64 be_payfor_threshold;  //! 被代付对象提醒门限值
+		//ADD
+		int32 be_alarm_id;          //! 提醒规则
+		//ADD
+        int64 done_code;            //代付关系增加产品编号，账务要求
+        int32 measure_id;           //度量ID   hujh20120508ADD
+	}
+   //! 其中int32为rule_id，业务分账规则
+   map aimap<int32,SSubPayforRule> SSubPayforRuleMap;
+
+	
+	//---------------------------------------------------------//
+	//RATE_PROD_ID	描述产品订购。	
+	//{销售品编号,产品订购唯一实例,产品生效日期,产品失效日期,支付CA,产品规格类型,
+	//产品类型,虚用户编号,用户角色,群共享免费资源时的优先级,提醒支付CA,
+	//促销参数[Key1=VALUE1]…}
+	//{}...
+	struct SRateProdId
+	{
+		int32 offer_prod_id;                   //销售品编号
+		//int64 done_code;                       //产品订购唯一实例		
+		int32 prod_spec_type;                  //产品规格类型
+		int32 prod_type;                       //产品类型
+		//int32 priority;                        //群共享免费资源时的优先级 : 指明是先消耗群共享免费资源还是先消耗个人免费资源
+		//int64 pay_acct_id;                     //支付CA
+		//int64 alarm_acct_id;                   //提醒支付CA		
+		int32 suitable_net;                    //产品适用网络
+		int64 group_acc_id;                    //群组虚帐户编号
+		int32 OPP_GROUP_ID;                    //对端群组ID		linbc20111221 modified
+		//int32 role_id;                         //用户角色
+		int64 valid_date_time;                 //产品生效日期
+		int64 expire_date_time;                //产品失效日期
+		int32 timezone_offset;                 //时区偏移量  暂时填0 caiwei20120610ADD		
+		SPromParamMapMap group_prom_spec_map;  //促销参数
+		int32 bill_type;                       //销售品的预后付属性。0:预付费  1:后付费   huangyd20120521ADD
+		int64 VT;							   //调整后的VT	dengpy20120901ADD
+	}
+	//! 其中int64为SRateProdId.done_code,产品实例话ID
+	map aimap<int64,SRateProdId> SRateProdIdMap;
+	
+	//---------------------------------------------------------//
+	//RATE_PROD_PRICE	描述产品的价格。	
+	//{销售品编号,产品订购唯一实例,价格编号,价格类型,价格参数[Key1=VALUE1]...}
+	//{}…
+	struct SRateProdPrice
+	{
+		int64 done_code;                   //产品订购唯一实例
+		int32 price_id;                    //价格编号
+		int32 price_type;                  //价格类型
+		SPromParamMap prom_param_map;      //促销参数[Key1=VALUE1]
+	}
+	//!edit  以后应该修改成map类
+	list vector<SRateProdPrice> SRateProdPriceList;
+
+	//---------------------------------------------------------//
+	//RATE_PROD_BILL_CYCLE 描述产品计费周期，仅用于存在月租费用或者（周期性）免费资源赠送时。
+	//{销售品编号,产品订购唯一实例,帐期类型,帐期周期间隔,帐期周期类型,帐期生效日期,帐期失效日期}
+	//{}...
+	struct SRateProdBillCycle
+	{
+		int32 offer_prod_id;               //销售品编号
+		int64 done_code;                   //产品订购唯一实例
+		//DEL int32 bill_type;             //帐期类型
+		int64 first_cycle_date_time;       //首周期截止日期
+		int16 cycle_unit;                  //帐期周期间隔
+		int16 cycle_type;                  //帐期周期类型
+		int64 valid_date_time;             //产品生效日期  caiwei20120717ADD
+		int64 expire_date_time;            //产品失效日期  caiwei20120717ADD
+		//int32 monitor_type;              //预后扣属性
+		int32 cycle_count;                 //记录产品的周期数 caiwei20120815ADD
+	}
+	//! 其中int64为SRateProdBillCycle.done_code,产品实例话ID
+	map aimap<int64,SRateProdBillCycle> SRateProdBillCycleMap;
+
+	//RATING_RES	描述资源量。	
+	//{（资源型）度量定义,起始资源量,资源量}
+	//{}…
+	struct SRatingRes
+	{
+	    int32 measure_id;                  //（资源型）度量定义
+		int64 begin_res;                   //起始资源量
+		int64 amount_res;                  //资源量		
+	}
+	//!edit  以后应该修改成map类
+	list vector<SRatingRes> SRatingResList;
+	
+	//TRIGGER_ALARM_RULE_PAIR   小区提醒 触发类型对应提醒规则 qijf20120321ADD
+    //{Zone提醒规则,触发类型}{}...
+    struct  STriggerAlarmRule
+    {
+        int32 alarm_rule_id;               //Zone提醒规则  qijf20120321ADD
+        int32 trigger_type;                //触发类型   qijf20120321ADD
+    }
+        list vector<STriggerAlarmRule> STriggerAlarmRuleList;
+
+
+	
+	//---------------------------------------------------------//
+	//RATE_PROD_ZONE	小区提醒。	
+	//{销售品编号,产品订购唯一实例,任选一个有效的Zone Code,小区类型，触发类型对应提醒规则列表}
+	//{}...
+	struct SRateProdZone
+	{
+		int32 offer_prod_id;               //销售品编号
+		int64 done_code;                   //产品订购唯一实例
+		int32 zone_code;                   //有效的Zone Code
+		int32 zone_type;                   //小区类型
+		STriggerAlarmRuleList  triger_alarm_rule;   //触发类型对应提醒规则列表  qijf20120321ADD
+	}
+	//! 其中int64为 SRateProdZone.done_code,产品实例话ID    chengl20111221modified
+	map aimap<int64,SRateProdZone> SRateProdZoneMap;
+	
+
+		
+	//---------------------------------------------------------//
+	//TAX_RULE	描述一个设备含有的税种。	
+	//{税种编号}
+	//{}...
+	struct STaxRule
+	{
+		int32 tax_plan_id;          //税计划编号     wangchh20111109ADD
+	}
+	//!edit  以后应该修改成map类
+	list vector<STaxRule> STaxRuleList;
+	
+	//---------------------------------------------------------//
+	//SLA_RULE	SLA控制。	
+	//{销售品编号,产品订购唯一实例,SLA 规则ID,优先级}
+	//{}…	20111012Qiuzhq
+	struct SSlaRule
+    {
+        int64 done_code;                    //产品订购唯一编号
+        int32 sla_rule_id;                  //SLA 规则ID        
+    }
+	//! 其中int64为 SSlaRule.done_code,产品实例话ID	
+	list vector<SSlaRule> SSlaRuleList;     //20111012Qiuzhq
+	map aimap<string,SSlaRuleList> SSlaRuleListMap;   //SERVICE_CODE 为KEY; SSlaRuleList为value。20111012Qiuzhq
+
+    //结构体SRgRule用于前置机解码和业务之间的GX业务信息交互。保存单个rule的信息。 zhubo20111101ADD
+    struct SRgRule
+    {
+    string service_code;         //用作RG的唯一标识。
+    string rule_name;            //PCC rule名字
+    string rule_base_name;       //PCC rule预定义组名
+    int32  rule_flag;            //0：rule没有修改，1:新增rule，  2：修改rule, 3：删除rule   zhubo20111213ADD
+    }
+    list vector<SRgRule> SRgRuleList;
+    
+	
+	//---------------------------------------------------------//
+	//ACCUMULATE_RULE	累计统计规则。	
+	//{销售品编号,产品订购唯一实例,累计统计规则}
+	//{}…
+	struct SAccumulateRule
+	{	
+	    int32 statistic_rule_id;                //累计统计规则
+		int64 valid_date_time;                  //生效日期    caiwei20111221ADD
+		int64 expire_date_time;                 //失效日期    caiwei20111221ADD
+	}
+	//! 其中int64为 产品编号
+	map aimap<int64,SAccumulateRule> SAccumulateRuleMap;
+	
+	//---------------------------------------------------------//
+	//PROPERTY_VAL_MIN	描述这个业务场景下生效的资产提醒规则。	
+	//{支付CA,小余额提醒规则,优先级,生效日期,失效日期}
+	//{}...
+	struct SPropertyValMin
+	{		
+		int32 alarm_rule_id;               //小余额提醒规则
+		int32 priority;                    //优先级
+		int64 valid_date_time;             //产品生效日期
+		int64 expire_date_time;            //产品失效日期
+		int64 done_code;                   //（资产提醒规则 ）产品实例化ID qijianf20120416ADD
+	}
+	list vector<SPropertyValMin> SPropertyValMinList;
+
+	//! 其中int64为 SPropertyValMin.pay_acct_id,产品实例话ID
+	map aimap<int64,SPropertyValMinList> SPropertyValMinListMap;
+	
+	// 累计提醒规则    wangchh20111214ADD
+    struct SAccumulateAlarm 
+    {   
+        int32 alarm_rule_id;                //累计提醒规则
+        int64 done_code;			     	//产品编号      wangchh20111219ADD
+        int64 valid_date_time;              //产品生效日期
+        int64 expire_date_time;             //产品失效日期
+     }
+        list vector<SAccumulateAlarm> SAccumulateAlarmList;
+
+	
+	//---------------------------------------------------------//
+	//GROUP_ACCT_PAYMENT	描述余额代付。	
+	//{代付账户编号,分账规则,优先级,生效日期,失效日期,[业务分账规则,门限值][]...}
+	//{}…
+	struct SGroupAcctPayment
+	{
+	    int64 payfor_serv_id;              //!代付用户编号 hujh20110926ADD
+		int64 payfor_acct_id;              //代付账户编号
+		int32 spec_acct_type;              //资金代付用户的特殊帐户类型   wangjing20120717ADD
+		int32 seg_id;                      //时段生效ID    hujh20111024ADD
+		int32 priority;                    //优先级
+		int32 policy_id;                   //条件表达式   hujh20120104add
+		SSubPayforRuleMap sub_payfor_rule; //业务分账规则		
+	}
+	//!edit  以后应该修改成map类
+	list vector<SGroupAcctPayment> SGroupAcctPaymentList;
+	
+	//---------------------------------------------------------//
+	//GROUP_FREEBIE_PAYMENT	描述免费资源代付。	
+	//{代付账户编号,分账规则,优先级,生效日期,失效日期,门限值,代付用户编号,免费资源科目}
+	//{}...
+	struct SGroupFreebiePayment
+	{
+		int64 payfor_acct_id;              //代付账户编号
+		int32 payfor_rule_id;              //分账规则
+		int32 priority;                    //优先级
+		int64 valid_date_time;             //产品生效日期
+		int64 expire_date_time;            //产品失效日期		
+		int64 owner_id;                    //代付用户编号,在ABM中就是拥有者编号
+		int32 freeres_item_id;             //免费资源科目
+		int64 threshold;                   //门限值
+	}
+	//!edit  以后应该修改成map类
+	list vector<SGroupFreebiePayment> SGroupFreebiePaymentList;
+	
+	//预算控制明细    hujh20120417ADD
+    struct SBudgetInfoDtl
+    {
+        int32 threshold; //! 预算门限值
+        int32 action;    //! 达到阀值后动作:  2: Bar Service and Notification  3: Notification
+    }
+        list vector<SBudgetInfoDtl> SBudgetInfoDtlList;
+
+	
+	//---------------------------------------------------------//
+	//GROUP_BUDGET	描述预算。	
+	//{编号ID,预算规则ID,门限值,组合预算Level类型,生效日期,失效日期}
+	//{}...
+	struct SGroupBudget
+	{		
+		int64 product_id;                  //!product id hujh20110926ADD
+		int32 budget_id;                   //! 预算规则		caiwei20120410modify
+		int32 bill_type;                   //预算规则上的预后付费属性　chenlong20111005ADD
+		int32 effect_object_type;          //作用对象：0：CA/GCA (集团、账户或者客户)  1：resource (用户) hujh20120104ADD
+        int32 policy_id;                   //条件表达式    hujh20120104ADD
+        int32 measure_id;                  //度量ID 	hujh20120508ADD 
+        int32 priority;                    //优先级     hujh20120629ADD
+        SBudgetInfoDtlList budget_info_dtl;//预算控制明细  hujh20120417ADD	
+	}
+	//!edit  以后应该修改成map类
+	list vector<SGroupBudget> SGroupBudgetList;
+	
+	//---------------------------------------------------------//
+	//ORI_CHARGE	原始费用	
+	//{科目类型,原始费用,（货币）度量定义}
+	//{}...
+	struct SOriCharge
+	{
+		int32 item_sub_type;               //科目类型
+		int64 fee;                         //费用值
+		int32 measure_id;                  //费用单位
+		int32 include_tax_flag;            //费用含税标志
+		int16 HAS_ORI_CHARGE;              //网元是否有送原始费用标识   dengpy20111017ADD
+
+	}
+	//!edit  以后应该修改成map类
+	list vector<SOriCharge> SOriChargeList;	
+	
+	//*************************************************************************//
+	//* BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN *//
+	//*************************************************************************//
+	
+	///////////////////////////////////////////////////////////////////////////
+	//                                                                       //
+	//                                                                       //
+	//                  这部分既是保存在前置的输出数据，                     //
+	//                  也是前置机更新包返回时的输入数据                     //
+	//                  SInOutFecXdr                                         //
+	//                                                                       //
+	///////////////////////////////////////////////////////////////////////////
+	//FREERES_MIDDLE_INFO	描述反算过程中免费资源资产的使用情况。	
+	//{产品编号,免费资源科目,（会话）实际冻结值,生效日期,失效日期}
+	//{}…
+	struct SFreeresMiddleInfo
+	{
+		int64 done_code;                   //产品订购唯一实例		
+		int64 freeze_amount;               //（会话）实际冻结值
+		int64 valid_date_time;             //产品生效日期
+		int64 expire_date_time;            //产品失效日期
+		int32 freeres_item_id;             //免费资源科目
+		int32 freeres_type;                //免费资源类型   hujh20120213ADD
+	}	
+		list vector<SFreeresMiddleInfo> SFreeresMiddleInfoList;
+	
+	//CREDIT_MIDDLE_INFO	描述反算过程中账本资产、信用度资产的使用情况。	
+	//{帐户编号,资产ID,资产科目,（会话）实际冻金额}
+	//{}…
+	struct SCreditMiddleInfo
+	{
+		int64 acct_id;                     //帐户编号
+		int64 asset_id;                    //资产ID		
+		int64 freeze_amount;               //（会话）实际冻结值
+		int32 asset_item_id;               //资产科目
+	}
+	//! int64 为 SCreditMiddleInfo.asset_id 资产ID
+	map aimap<int64,SCreditMiddleInfo> SCreditMiddleInfoMap;
+	
+	//BUDGET_MIDDLE_INFO	描述反算过程中预算的使用情况。	
+	//{（虚）用户编号,拥有者类型,预算规则,
+	//（会话）实际预算冻结值,生效日期,失效日期}
+	//{}…
+	struct SBudgetMiddleInfo
+	{
+		int64 done_code;                   //产品订购唯一实例   hujh20120222ADD		
+		int64 freeze_amount;               //（会话）实际冻结值
+		int64 valid_date_time;             //产品生效日期
+		int64 expire_date_time;            //产品失效日期
+		int32 budget_id;                   //预算规则
+	}
+	//!edit  以后应该修改成map类
+	list vector<SBudgetMiddleInfo> SBudgetMiddleInfoList;
+	
+	//PAYMENT_MIDDLE_INFO	描述反算过程中余额代付的使用情况。	
+	//{代付账户,被代付用户,虚科目,归属日期,（会话）实际代付冻结值}
+	//{}…
+	struct SPaymentMiddleInfo
+	{  
+		int64 acct_id;                     //支付CA
+		int64 serv_id;                     //被代付用户		
+		int64 freeze_amount;               //（会话）实际冻结值
+		int64 valid_date_time;             //生效日期 
+		int64 expire_date_time;            //失效日期
+		int32 pay_rule_id;                 //代付规则 		
+		int32 belong_date;                 //归属日期{格式：年月日(8位)}
+	}       
+	//!edit  以后应该修改成map类
+	list vector<SPaymentMiddleInfo> SPaymentMiddleInfoList;
+	
+  //CAP_MAX_VAL 资源型预算使用情况。
+ //{拥有者编号,拥有者类型,预算规则,本条通话预算更新值,生效日期,失效日期}{}…
+    struct SCapMaxVal
+    {
+        int64 owner_id;                    //拥有者编号        
+        int64 budget_amount;               //本条通话预算更新值
+        int64 valid_date_time;             //生效日期
+        int64 expire_date_time;            //失效日期
+        int64 done_code;                   //产品订购唯一实例
+        int64 acct_id;                     //账户编号  hujh20120227ADD 
+        int32 owner_type;                  //拥有者类型
+        int32 budget_id;                   //预算规则
+        int32 measure_id;                  //度量ID  hujh20120509ADD 
+    }
+         //!edit  以后应该修改成map类
+         list vector<SCapMaxVal> SCapMaxValList;
+
+    //FREERES_LIMIT_MIDDLE_INFO 描述反算过程中共享免费资源封顶的使用情况。 
+    //{拥有者编号,拥有者类型,产品编号,免费资源科目,（会话）实际冻结值,生效日期,失效日期}{}…
+    struct SFreeresLimitMiddleInfo
+    {
+        int64 owner_id;                    //拥有者编号        
+        int64 done_code;                   //产品订购唯一实例        
+        int64 freeze_amount;               //（会话）实际冻结值
+        int64 valid_date_time;             //产品生效日期
+        int64 expire_date_time;            //产品失效日期
+        int32 owner_type;                  //拥有者类型 
+        int32 freeres_item_id;             //免费资源科目
+    } 
+        list vector<SFreeresLimitMiddleInfo> SFreeresLimitMiddleInfoList;
+ 
+    //描述反算过程中累计优惠或者累计赠送提醒。  weijl20111102ADD CaiWei20120832DELETE
+	//struct SAccumulatePriceAlert
+    //{
+    //    int64 done_code;                       //!产品订购唯一实例
+    //    int64 accumulate_threshold;            //!累计门限值.
+    //    int32 price_id;                        //!价格编号        
+    //}
+    //list vector <SAccumulatePriceAlert> SAccumulatePriceAlertList;  
+    
+   ///< 会话结构
+
+    struct SAbmSessionInfo
+    {
+        int64       acct_id;                  ///< 账户编号
+        int64       owner_id;                   ///< 对象编号
+        int16       owner_type;               ///< 对象类型
+        int64       session_id;               ///< 会话编号
+    }
+    list vector<SAbmSessionInfo> SAbmSessionInfoList;
+   
+	struct SInOutFecXdr
+	{		
+	    //SAccumulatePriceAlertList   accumulate_price_alert;    //描述反算过程中累计优惠或者累计赠送提醒。weijl20111102ADD CaiWei20120832DELETE
+		SFreeresMiddleInfoList      freeres_middle_info;       //FREERES_MIDDLE_INFO
+		SFreeresLimitMiddleInfoList freeres_limit_middle_info; //FREERES_LIMIT_MIDDLE_INFO hujh20111005ADD
+		SCreditMiddleInfoMap        credit_middle_info;        //CREDIT_MIDDLE_INFO
+		SCreditMiddleInfoMap        book_middle_info;          //BOOK_MIDDLE_INFO
+		SBudgetMiddleInfoList       CAP_MAX_MIDDLE_INFO;       //CAP_MAX_MIDDLE_INFO
+		SBudgetMiddleInfoList       budget_middle_info;        //BUDGET_MIDDLE_INFO
+		SPaymentMiddleInfoList      payment_middle_info;       //PAYMENT_MIDDLE_INFO
+		SAbmSessionInfoList					abm_session_info;					 //云化版本记录ABM交互过程中产生的
+		int32                       sla_alert;                 //反算过程中的SLA提醒 slaRefValueId   wangchh20111102ADD		
+	}
+	
+	//*************************************************************************//
+	//* END * END * END * END * END * END * END * END * END * END * END * END *//
+	//*************************************************************************//
+	
+	
+	//*************************************************************************//
+	//* BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN *//
+	//*************************************************************************//
+	
+	///////////////////////////////////////////////////////////////////////////
+	//                                                                       //
+	//                                                                       //
+	//                    这部分是批价完成后的输出数据                       //
+	//                    SOutRatingXdr                                      //
+	//                                                                       //
+	//                                                                       //
+	///////////////////////////////////////////////////////////////////////////
+	
+
+
+	//CHARGE	计费科目上对应的费用，包括税收的费用。	
+	//{计费科目,费用,优惠费用,（货币）度量定义}
+	//{}...
+	struct SCharge
+	{
+		int32 change_item_id;              //计费科目
+		int32 item_type;                   //计费科目类型
+		int64 fee;                         //费用
+		int64 reduce_fee;                  //优惠费用
+		int32 measure_id;                  //（货币）度量定义
+		int64 standard_product_id;         //标准批价产品编号   caiwei20111109ADD
+		
+	}
+	//!edit  以后应该修改成map类
+	list vector<SCharge> SChargeList;	
+	
+	//Markup的费用信息   wangchh20111116ADD
+    struct SMarkupCharge
+    {
+        int32 markup_code;                  // markup编号
+        int32 charge_item;                  // markup的计费科目
+        int64 fee;                          // markup费用
+        int32 measure_id;                   // （货币）度量定义
+        int64 standard_product_id;          // 标准批价产品编号    
+    }
+    list vector<SMarkupCharge> SMarkupChargeList;
+	
+    //DISCOUNT_FEE  
+    //计费科目上对应定价的详细优惠费用（定价）
+    //{计费科目,产品编号,价格ID,价格类型,优惠费用,（货币）度量定义}
+    struct SDiscountFee
+    {
+        int32 item_id;                     //计费科目 
+        int32 measure_id;                  //（货币）度量定义         
+        int64 product_id;                  //产品编号
+        int32 price_id;                    //价格ID
+        int32 price_type;                  //价格类型
+        int64 reduce_fee;                  //优惠费用            
+        int64 standard_product_id;         // 标准批价产品编号    caiwei20111109ADD
+
+    }
+    list vector<SDiscountFee> SDiscountFeeList;
+
+
+	//TAX_CHARGE	税收情况。	
+	//{税种编号,费用,优惠费用,（货币）度量定义}{}...
+	struct STaxCharge
+	{				
+		int64 standard_product_id;         // 标准批价产品编号  caiwei20111109ADD	
+		int32 charge_item;                 //扣税的计费科目	
+		int32 tax_id;                      //税种编号
+		int64 fee;                         //费用			
+		int64 reduce_fee;                  //优惠费用
+		int32 measure_id;                  //（货币）度量定义			
+	}
+	//!edit  以后应该修改成map类
+	list vector<STaxCharge> STaxChargeList;
+
+	//FREE_RES_DISCOUNT_FEE	免费资源优惠费用明细。	hujh20120214ADD
+	//{产品订购唯一实例,免费资源科目,免费资源类型,本条通话消耗量,标准批价产品编号,计费科目,减免费用度量,减免费用}
+	//{}...
+	struct SFreeResDiscountFee
+    { 
+        int64 done_code;                   //产品订购唯一实例
+        int32 freeres_item_id;             //免费资源科目
+        int32 free_res_type;               //免费资源类型
+        int64 valid_date_time;             //生效日期   hujh20120215ADD
+        int64 expire_date_time;            //失效日期   hujh20120215ADD
+        int64 this_time_used;              //本条通话消耗量
+        int64 standard_product_id;         //标准批价产品编号 
+        int32 change_item_id;              //计费科目
+        int32 measure_id;                  //减免费用度量   
+        int64 reduce_fee;                  //减免费用       
+    }
+        list vector<SFreeResDiscountFee> SFreeResDiscountFeeList;
+
+
+	//FREE_RES_CREATOR	免费资源生成。	
+	//{账户编号,拥有者编号,拥有者类型,产品编号,免费资源科目,赠送量,生效时间,失效时间}
+	//{}...
+	struct SFreeResCreator
+	{
+		int64 acct_id;                     //账户编号		
+		int64 owner_id;                    //拥有者编号
+		int32 owner_type;                  //拥有者类型
+		int32 MEASURE_ID;                  //度量ID    hujh20120220ADD		
+		int64 done_code;                   //产品订购唯一实例
+		int32 freeres_item_id;             //免费资源科目
+		int64 free_res_limit;              //赠送量
+		int64 valid_date_time;             //生效日期
+		int64 expire_date_time;            //失效日期
+		int32 free_res_type;               //免费资源类型   zhourh20111017ADD
+		int32 price_id;                    //定价ID         caiwei20120119ADD		
+	}
+	//!edit  以后应该修改成map类
+	list vector<SFreeResCreator> SFreeResCreatorList;
+
+	//ADDUP_RES_QUERY_VAL 定价累计量查询情况。
+    //{账户编号,拥有者编号,拥有者类型,产品编号,定价编号,累积科目,生效时间,失效时间:已累计值}
+    //{}…
+    struct SAddupResQueryVal
+    {
+        int64 acct_id;                     //账户编号 zhourh20120305ADD
+        int64 owner_id;                    //拥有者编号
+        int32 owner_type;                  //拥有者类型
+        int64 product_id;                  //产品编号  wangchh20120207ADD
+        int32 price_id;                    //定价ID 
+        int32 measure_id;                  //度量ID hujiah20120502ADD
+        int64 rating_item_id;              //累计科目
+        int64 valid_date_time;             //生效日期
+        int64 expire_date_time;            //失效日期
+        int64 rating_value;                //已累计值
+    }
+        list vector<SAddupResQueryVal> SAddupResQueryValList;
+        
+        //ADDUP_RES_USING_VAL 定价累计量使用情况。zhourh20120305ADD
+        //{产品编号,定价或规则编号,累积科目,累积的增量,生效时间,失效时间}
+        //{}…
+    struct SAddupResUsingVal
+    {
+        int64 product_id;                  //产品编号 
+        int32 price_id;                    //定价或规则编号
+        int64 rating_item_id;              //累计科目
+        int64 rating_value;                //本次增量
+        int64 valid_date_time;             //生效日期
+        int64 expire_date_time;            //失效日期        
+    }
+        list vector<SAddupResUsingVal> SAddupResUsingValList;	
+	
+
+	//VALID_RATE_PROD_ID	（最终）生效的基本资费。	
+	//{计费科目,产品订购唯一实例,基本资费定价ID,费率编号}
+	//{}...
+	struct SValidRateProdId
+	{
+		int32 change_item_id;              //计费科目		
+		int64 done_code;                   //产品订购唯一实例
+		int32 price_id;                    //基本资费定价ID
+		int32 rate_id;                     //费率编号
+		
+	}
+	//!edit  以后应该修改成map类
+	list vector<SValidRateProdId> SValidRateProdIdList;
+
+	
+	//PRICE_TRACE	定价使用轨迹。	
+	//{计费科目,产品订购唯一实例,定价ID}
+	//{}...
+	struct SPriceTrace
+	{
+		int32 change_item_id;              //计费科目		
+		int64 done_code;                   //产品订购唯一实例
+		int32 price_id;                    //定价ID
+	}
+	//!edit  以后应该修改成map类
+	list vector<SPriceTrace> SPriceTraceList;
+
+	//PRE_PAY_BILL_DTL	话单扣费明细，用于账单汇总。	
+	//{用户编号,帐户编号,资产ID,计费科目,产品订购唯一实例,
+	//（原始话单）费用或冻结费用,（原始话单）透支费用,（原始话单）（货币）度量定义,汇率}
+	//{}...
+	struct SPrePayBillDtl
+	{
+		int64 serv_id;                     //虚用户编号
+		int64 acct_id;                     //帐户编号
+		int64 asset_id;                    //资产ID
+		int32 change_item_id;              //计费科目		
+		int64 done_code;                   //产品订购唯一实例
+		int64 used_fee;                    //（原始话单）费用或冻结费用
+		int64 overdraft_fee;               //（原始话单）透支费用
+		int32 measure_id;                  //（原始话单）（货币）度量定义
+		float exchange_rate;               //汇率
+	}
+	//!edit  以后应该修改成map类
+	list vector<SPrePayBillDtl> SPrePayBillDtlList;
+	
+	
+	//add by hujiahua 2011/7/12
+	//STD_UNIT
+	//计费单元量
+	//{科目,计费单元量}{}…
+	struct SStdRatingUnit
+	{
+		int32 item_id;                 //计费单元量定义中科目		
+		int32 cycle_unit;              //计费单位    zhourh20111012ADD
+        int32 res_measure_id;          //计费单位的度量ID  zhourh20111012ADD
+        int64 std_begin_res;           //标准起始资源量    caiwei20120808ADD
+        int64 std_res;                 //标准资源量定义中标准资源量  zhourh20111012ADD
+        int64 std_unit;                //计费单元量定义中计费资源量
+        int64 standard_product_id;     //标准批价产品编号   liuhj20111114ADD
+        
+	}
+	list vector<SStdRatingUnit> SStdRatingUnitList;
+	
+    //FREERES_LIMIT_QUERY_VAL 共享免费资源封顶使用情况。 zhourh20120406Modify
+    //{（订购免费资源的）产品编号,资产科目,生效时间,失效时间,消耗前已冻结量,消耗前已使用量,封顶值,封顶类型}
+    //{}...
+    struct SFreeResLimitQueryVal
+    {
+        int64 done_code;        //产品订购唯一实例 
+        int32 freeres_item_id;  //免费资源科目
+        int32 limit_type;       //免费资源封顶类型   wangchh20120521ADD 
+        int64 valid_date_time;  //生效日期 hujh20120222ADD
+        int64 expire_date_time; //失效日期 hujh20120222ADD 
+        int64 free_res_freeze;  //消耗前已冻结量 hujh20120214ADD
+        int64 free_res_used;    //消耗前已使用量
+        int64 amount;           //封顶值
+        int64 serv_id;          //用户ID    wangchh20120521ADD
+    }
+        list vector<SFreeResLimitQueryVal> SFreeResLimitQueryValList;
+        
+    //! 账本信用度查询情况   zhourh20120406ADD
+    //! {账户编号,资产ID,资产科目,（资产）度量定义,冲销前账本冻结费用,冲销前账本累计费用,账本余额,账本分类}{}…
+    struct SAssetQueryVal
+    {
+        int64 acct_id;           //账户编号
+        int64 asset_id;          //资产ID
+        int32 asset_item_id;     //资产科目
+        int32 asset_measure_id;  //（资产）度量定义
+        int64 asset_freeze_fee;  //冲销前资产冻结费用
+        int64 asset_used_fee;    //冲销前资产累计费用
+        int64 asset_amount;      //账本或信用度总额
+        int32 asset_type;        //账本时：0 正常账本，1负账本 
+                                 //信用度：0：普通信用度，1：临时信用度，2：后付费账本，3：无穷大普通信用度，4：无穷大临时信用度
+    }
+        list vector<SAssetQueryVal> SAssetQueryValList;
+        
+    //! 账本信用度使用情况    zhourh20120406ADD
+    //! {帐户编号,资产ID,本条通话需要冲销的费用,本条通话需要冲销的冻结金额}{}…
+    struct SAssetChargeVal
+    {
+        int64 acct_id;   //账户编号
+        int64 asset_id;  //资产ID
+        int64 need_fee;  //本条通话需要冲销的费用
+        int64 freeze_fee;//本条通话需要冲销的冻结金额
+    }
+        list vector<SAssetChargeVal> SAssetChargeValList;
+
+    //! 免费资源查询情况   zhourh20120406ADD
+    //! {账户编号,拥有者编号,拥有者类型,（订购免费资源的）产品编号,定价编号,资产科目,免费资源类型,（资产）度量定义,生效时间,失效时间,赠送量,消耗前已冻结量,消耗前已使用量}{}…
+    struct SFreeResQueryVal
+    {
+        int64 acct_id;           //账户编号
+        int64 owner_id;          //拥有者编号
+        int32 owner_type;        //拥有者类型 
+        int64 done_code;         //产品订购唯一实例
+        int32 price_id;          //定价ID
+        int32 freeres_item_id;   //免费资源科目
+        int32 free_res_type;     //免费资源类型
+        int32 measure_id;        //度量ID
+        int64 valid_date_time;   //生效日期
+        int64 expire_date_time;  //失效日期 
+        int64 free_res_limit;    //赠送量
+        int64 free_res_used;     //消耗前已使用量
+        int64 free_res_freeze;   //消耗前已冻结量
+    }
+        list vector<SFreeResQueryVal> SFreeResQueryValList;
+
+	
+	//FREE_RES_CHARGE_VAL   免费资源使用情况的信息   hujh20120214ADD   zhourh20120406Modify
+	//{账户编号,拥有者编号,拥有者类型,产品订购唯一实例,免费资源科目,免费资源类型,生效日期,失效日期,
+	// 本条通话消耗量,本条通话冻结量,消耗前已使用量,消耗前已冻结量,赠送量}
+	//{}...
+	struct SFreeResChargeVal
+    {
+        int64 done_code;                   //产品订购唯一实例
+        int32 freeres_item_id;             //免费资源科目
+        int32 free_res_type;               //免费资源类型
+        int64 valid_date_time;             //生效日期
+        int64 expire_date_time;            //失效日期
+        int64 this_time_used;              //本条通话消耗量 
+        int64 this_time_freezed;           //本条通话冻结量            
+    }
+        list vector<SFreeResChargeVal> SFreeResChargeValList; 
+
+ 
+    //PAYFOR_VAL 余额型代付日志
+    //{支付CA,被代付用户,代付规则ID,产品编号,代付累加值,生效日期,失效日期}{}…
+    struct SPayforVal
+    {
+        int64 ACCT_ID;                     //支付CA
+        int32 PAY_RULE_ID;                 //代付规则ID
+        int64 SERV_ID;                     //被代付用户        
+        int64 PRODUCT_ID;                  //产品编号
+        int64 PAYFOR_AMOUNT;               //代付累加值
+        int64 VALID_DATE_TIME;             //生效日期
+        int64 EXPIRE_DATE_TIME;            //失效日期
+        int32 measure_id;                  //度量ID   hujh20120510ADD
+    } 
+    list vector<SPayforVal> SPayforValList;    
+    
+    //! 预后属性及冲销方式  -- 批价输出字段  zhourh20120109ADD
+    struct SPayOffMode
+    {
+        int32 monitor_cdr;      //! 预后属性 ，1－后付费模式。－－此时先冲销信用度。0－预付费模式。－－此时先冲销账本。
+        int32 billing_type;     //! 冲销方式， 0－仅账本、或信用度冲销适用。1－信用度、和账本冲销都适用。
+        int32 payfor_billing_type;     //! 代付账户的冲销方式  zhourh20120305ADD
+    }
+    
+    struct SRating2BillItem
+    {
+        int32 bill_item;  //! 账务科目
+    }
+        map aimap<int32,SRating2BillItem> SRating2BillItemMap;  //! key为计费科目
+     
+
+    //上海科目转换XDR结构 yinglijing20120827
+    struct SChargeConverted
+    {
+        int32 billing_item_id;             //帐务科目
+        int64 fee;                         //费用
+        int64 reduce_fee;                  //优惠费用
+        int32 measure_id;                  //（货币）度量定义
+        int64 standard_product_id;         //标准批价产品编号
+        int32 accumulate_measure_id;       //(累积量)度量定义  luochangquan20121030ADD
+        int64 accumulate_value;            //累积量            luochangquan20121030ADD
+    }
+    list vector <SChargeConverted> SChargeConvertedList;
+
+
+    //结算费用 caiwei20120610ADD   
+    struct SSettleCharge
+    {
+        int32 settle_item_id;  //结算科目
+        int64 fee;             //费用
+        int32 measure_id;      //（货币）度量定义
+    }
+        list vector<SSettleCharge> SSettleChargeList;
+   
+   //用于未扣完的费用。caiwei20120610ADD
+   struct SUndeductFee
+   {
+        int32 charge_item_id;       //计费科目 
+        int64 standard_product_id;  //标批产品编号
+        int64 fee;                  //费用
+        int32 measure_id;           //（货币）度量定义
+   }
+        list vector<SUndeductFee> SUndeductFeeList;
+   
+   
+	struct SOutRatingXdr
+	{
+		int32                   app_type;              // APP_TYPE 整型，（资源型）度量类型规格。
+		int32                   APP_QUOTA_ID;          // 生效的配额规则   zhourh20120906ADD
+		int64                   process_time;          // PROCESS_TIME 长整型。
+		SChargeList             charge;                // CHARGE
+		SChargeList             STD_TARIFF_CHARGE;     //保存基本资费的费用明细
+		SDiscountFeeList        DISCOUNT_FEE;          // DISCOUNT_FEE 优惠费用
+		STaxChargeList          tax_charge;            // TAX_CHARGE
+		SFreeResDiscountFeeList free_res_discount_fee; // 免费资源优惠费用明细  hujh20120214ADD
+		SFreeResChargeValList   free_res_charge_val;   // FREERES_CHARGE_VAL  hujh20120214ADD
+		SFreeResCreatorList     free_res_creator;      // FREE_RES_CREATOR
+        SAddupResQueryValList   addup_res_query_val;   // ADDUP_RES_QUERY_VAL 定价累计量的查询情况  zhourh20120306ADD
+        SAddupResUsingValList   addup_res_using_val;   // ADDUP_RES_USING_VAL 定价累积量的使用情况  zhourh20120306ADD
+		SAddupResQueryValList   ADDUP_RES_QUERY_VAL_PRICERULE; //定价规则的累积量查询情况   zhourh20120305ADD
+		SAddupResUsingValList   ADDUP_RES_USING_VAL_PRICERULE; //定价规则的累积量使用情况   zhourh20120305ADD	
+		SFreeResQueryValList    FREERES_QUERY_VAL;     //免费资源查询情况  zhourh20120406ADD
+        SAssetQueryValList      CREDIT_QUERY_VAL;      //信用度查询情况    zhourh20120406ADD
+        SAssetQueryValList      BOOK_QUERY_VAL;        //账本查询情况      zhourh20120406ADD
+        SAssetChargeValList     book_charge_val;       //账本使用情况      zhourh20120406ADD
+        SAssetChargeValList     credit_charge_val;     //信用度使用情况    zhourh20120406ADD
+        SFreeResLimitQueryValList FREERES_LIMIT_QUERY_VAL; //共享免费资源封顶使用情况   zhourh20120406ADD
+		SCapMaxValList          CAP_MAX_VAL;           // CAP_MAX_VAL 资源型预算使用情况
+        SCapMaxValList          BUDGET_VAL;            // BUDGET_VAL 余额型预算使用情况        
+        SPayforValList          PAYFOR_VAL;            // 余额型代付日志
+		SValidRateProdIdList    valid_rate_prod_id;    // VALID_RATE_PROD_ID
+		SPriceTraceList         price_trace;           // PRICE_TRACE
+		SPrePayBillDtlList      pre_pay_bill_dtl;      // PRE_PAY_BILL_DTL
+		SStdRatingUnitList      std_unit;              // STD_UNIT标准计费单元量
+		SStdRatingUnitList      FINAL_STD_UNIT;        // 保存最终费用的计费单位信息
+		int32                   TS_FLAG;               // TS离线类提醒标识   caiwei20120807ADD
+		SChargeList             IR_IDD_CHARGE;         // 国际漫游的IDD费用   lujw20111017ADD  wangchh20111102modified
+		int16                   IDD_OPERATOR_ID;       // IDD费用归属运营商代码   lujw20120117ADD
+		SMarkupChargeList       MARKUP_CHARGE;         // Markup费用  wangchh20111116ADD
+		SRateProdPriceList      rate_prod_price;       //定价列表     zhourh20120106ADD
+		SPayOffMode             HYBRID_RN;             //! 描述本条话单最终是按“预付”或“后付”属性、以及“冲销方式”批价的。zhourh20120109ADD
+		int32                   IS_BARSERVICE;         //标识是否调用了IMS的BAR SERVICE接口(sync hlr).caiwei20120610ADD
+		SSettleChargeList       SETTLE_CHARGE;         //结算费用 caiwei20120610ADD
+		SUndeductFeeList        UNDEDUCT_FEE;          //未扣完的费用 caiwei20120610ADD
+		int16                   UNDEDUCT_FLAG;         //未扣完标志 0：已扣完；1：未扣完；   caiwei20120627ADD		
+		
+		//上海版本专用字段 
+        SRating2BillItemMap  rating2billitemmap;  //计费账务科目转换映射字段
+        SChargeConvertedList CHARGE_CONVERTED;    //记录科目转换后的费用情况
+	}
+	
+	//*************************************************************************//
+	//* END * END * END * END * END * END * END * END * END * END * END * END *//
+	//*************************************************************************//
+	
+	
+	//*************************************************************************//
+	//* BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN *//
+	//*************************************************************************//
+	
+	///////////////////////////////////////////////////////////////////////////
+	//                                                                       //
+	//                                                                       //
+	//                    这部分是批价完成后的输出给前置机的数据             //
+	//                    SOutRatingFecXdr                                   //
+	//                                                                       //
+	//                                                                       //
+	///////////////////////////////////////////////////////////////////////////
+
+
+     //AOC基础数据  
+    struct SAocCode
+    {
+        int32   alarm_code;     //告警码
+        int64   done_code;      //产品编号   caiwei20120717ADD
+    }  
+      
+   //资产提醒明细
+    struct SAocAssetDtl
+    {
+        int64   acct_id;        //账户编号
+        int64   amount;         //总值
+        int64   deduce_value;   //已使用值
+        int64   threshold_value;//提醒门限值     
+        int32   vitem_code;     //虚资产科目
+        int32   measure_id;     //资产度量ID
+        int64   valid_date_time; // 生效日期  wangchh20120208ADD
+        int64   expire_date_time; // 失效日期  wangchh20120208ADD
+    } 
+
+   //AOC资产提醒
+    struct SAocAsset
+    {
+        SAocCode     aoc;              //告警码
+        int32        alarm_type;       //告警类型
+        SAocAssetDtl asset_dtl;        //资产提醒明细
+    }
+        list vector<SAocAsset> SAocAssetList; 
+         
+   //URL重定向地址:URL_ADDR
+    struct SUrlAddr
+    {
+        string<128> redirect_addr; 
+        int64       done_code;      //产品编号  caiwei20120717ADD
+    }
+
+   //URL资产提醒
+    struct SUrlAsset
+    {
+        SUrlAddr     url;              //URL重定向地址
+        int32        alarm_type;       //告警类型
+        SAocAssetDtl asset_dtl;        //资产提醒明细
+    }
+        list vector<SUrlAsset> SUrlAssetList;       
+    	
+	//QOS	
+	//SLA控制	{SLA值,（资源型）度量定义}	
+	//其中，若为空，表示无效。
+	struct SSlaValue
+	{
+	    int32 sla_type;                    //SLA类型
+		int64 sla;                         //SLA值
+		int32 measure_id;                  //（资源型）度量定义
+	}
+	//!edit  以后应该修改成map类
+	list vector<SSlaValue> SSlaValueList;
+	
+	//GSU	
+	//最大时间片	{GSU值,（资源型）度量定义}	
+	//其中，若为空，表示无效。
+	struct SGsuValue
+	{
+		int64 gsu;                         //GSU值
+		int32 measure_id;                  //（资源型）度量定义
+	}
+	//!edit  以后应该修改成map类
+	//DEL list vector<SGsuValue> SGsuValueList;	  
+	
+	    
+    map aimap<string,string> StringMap; 
+
+    // SLA提醒  wangchh20111031ADD
+    struct SSlaAlert
+    {
+	    SAocCode alarm_code; // 告警码
+	    SUrlAddr url;        // URL重定向地址
+	    int64    done_code;  // 产品编号
+    }
+    
+    //最后配额提醒 caiwei20120627ADD
+    struct SLastQuotaAlert
+    {
+        SAocCode alarm_code; // 告警码
+	    SUrlAddr url;        // URL重定向地址      
+    }
+    
+
+    //!告警时参考累计量信息   weijl20111102ADD
+    struct SAlarmAddup
+    {
+        int64 accumulate_threshold;      //!累计门限值 
+        int64 accumulate_value;          //!已累计值
+        int32 item_code;                 //!累计科目 
+        int32 measure_id;                //!度量ID 
+    }
+        list vector<SAlarmAddup> SAlarmAddupList;
+
+
+    //!累计优惠、累计赠送提醒AOC。  weijl20111102ADD
+    struct SAccumulatePriceAocCode 
+    {
+        SAocCode          aoc;                  //!告警码
+        int32             alarm_type;           //!告警类型
+        int32             price_id;             //!定价编号
+        int64             done_code;            //!产品编号        
+        int64             valid_date;           //!生效日期
+        int64             expire_date;          //!失效日期
+        SAlarmAddupList   salarm_addup;         //!告警参考累计量信息
+    }
+        list vector<SAccumulatePriceAocCode> SAccumulatePriceAocCodeList;
+
+    
+    //!累计优惠、累计赠送提醒URL重定向地址。  weijl20111102ADD
+    struct SAccumulatePriceUrlAddr
+    {
+        SUrlAddr        url;               //!URL重定向地址
+        int32           alarm_type;        //!告警类型
+        int32           price_id;          //!定价编号
+        int64           done_code;         //!产品编号        
+        int64           valid_date;        //!生效日期
+        int64           expire_date;       //!失效日期
+        SAlarmAddupList salarm_addup;      //!告警参考累计量信息
+    }
+        list vector<SAccumulatePriceUrlAddr> SAccumulatePriceUrlAddrList;
+    
+    // 小区提醒AOC   gongw20111102ADD 
+    struct SAocZone
+    {
+        SAocCode aoc;         //告警码
+        int64 product_id; 
+        int32 zone_code;      //小区代码
+        int32 zone_alert_flag;//小区标志位        
+    }
+        list vector<SAocZone> SAocZoneList;
+
+
+    //小区提醒URL重定向地址	        gongw20111102ADD
+    struct SUrlZone
+    {
+        SUrlAddr url;          //重定向地址
+        int64 product_id;
+        int32 zone_code;       //小区代码
+        int32 zone_alert_flag; //小区标志位        
+    }
+        list vector<SUrlZone> SUrlZoneList;
+
+    //反算接续拒绝原因   caiwei20111114ADD
+    struct SOcsRejectCause
+    {
+        int32 err_type_enum;     //错误类型枚举值   
+        int64 err_cause;         //错误原因      caiwei20111121modified
+    }
+    
+    
+    //账本信息    gongw20111114ADD
+    struct SBookInfo
+    {
+      int64 asset_id;    //资产编号
+      int64 valid_date;  //生效期
+      int64 expire_date; //失效期
+      int64 amount;      //账本资金
+      int64 deduct_fee;  //冲销费用
+      int32 measure_id;  //货币编号
+      int32 item_code;   //账本科目编号
+    }
+      list vector<SBookInfo> SBookInfoList;
+
+    //费率信息    gongw20111115ADD
+    struct SRateValue
+    {
+      int32     charge_item_id;     //计费科目
+      int32     charge_unit;        //计费单位
+      int32     res_measure_id;     //资源度量ID
+      int32     rate_value;         //费率值
+      int32     currency_measure_id;//货币度量ID
+    }
+      list vector<SRateValue> SRateValueList;
+
+    
+    //计费通话前提醒AOC      gongw20111114ADD
+    struct SBeforeMakeCallAoc
+    {
+      SAocCode       aoc;
+      SRateValueList rate_info;           //费率信息列表   gongw20111115ADD
+      SBookInfoList  book_info;           //账本信息列表
+    }
+    
+
+    //计费通话前提醒重定向地址    gongw20111114ADD
+    struct SBeforeMakeCallUrl
+    {
+      SUrlAddr       url;
+      SRateValueList rate_info;          //费率信息列表   gongw20111115ADD
+      SBookInfoList  book_info;          //账本信息列表
+    }
+    
+    //作为批价向前置机返回的SLA-RG计算结果（所有生效的SLA_RG_RULE对应的RG_NAME）,存放RG_RULE_NAME和RG_BASE_NAME  wangchh20120208ADD
+    struct SRgName
+    {
+      string rg_rule_name;
+      string rg_base_name;
+    }
+      map aimap<string, SRgName>  SRgNameMap; // key: “rg_rule_name:rg_base_name”
+
+    //拒绝接续提醒  caiwei20130220ADD
+    struct SOcsRejectAlert
+    {
+        SAocCode alarm_code;//告警码
+        SUrlAddr url;       //URL重定向地址
+    }
+    
+	struct SOutRatingFecXdr
+	{
+		SAccumulatePriceAocCodeList acc_price_alarm_code;   //用于存放累计优惠告警码    weijl20111102ADD
+		SAccumulatePriceUrlAddrList acc_price_url_addr;     //用于存放累计优惠URL重定向地址   weijl20111102ADD
+		SAocAssetList asset_alarm_code;                     //资产告警码
+        SUrlAssetList asset_url_addr;                       //资产URL重定向地址
+        //StringMap rg_rule;                                  //细分RG的SLA控制 <SERVICE_CODE, RG_RULE值> wangch320120831DELETE
+		SSlaValueList sla;                                  //QOS SLA控制 若为空，表示无效。	
+		SGsuValue gsu;                                      //GSU 最大时间片 若为空，表示无效。
+		SSlaAlert sla_alarm;                                //SLA提醒	 wangchh20111031ADD	
+		SLastQuotaAlert LAST_QUOTA_ALARM;                   //最后配额提醒	caiwei20120627ADD		
+		int64 vt;                                           //VT 长整型，单位：秒。若-1或为空，表示无效。
+		int64 vqt;                                          //VQT 长整型，单位：字节。若-1或为空，表示无效。
+		int64 tqt;                                          //TQT 长整型，单位：秒。若-1或为空，表示无效。
+		int64 QHT;                                          //(Quota-Holding-Time)来自RS_SYS_QUOTA_DEF.QHT;   wangjing20120627ADD
+        int64 QCT;                                          //(Quota-Consumption-Time),来自RS_SYS_QUOTA_DEF.QCT;  wangjing20120627ADD
+		int32 in_release_deal;                              //最后一个时间片标识		
+		SAocZoneList zone_alarm_aoc;                        //小区提醒AOC                   gongw20111102ADD
+        SUrlZoneList zone_alarm_url;                        //小区提醒URL重定向地址	        gongw20111102ADD
+        SOcsRejectCause ocs_reject_cause;                   //反算接续拒绝原因              caiwei20111107ADD
+        SBeforeMakeCallAoc before_makecall_aoc;             //计费通话前提醒AOC             gongw20111114ADD
+        SBeforeMakeCallUrl before_makecall_url;             //计费通话前提醒重定向地址      gongw20111114ADD
+        SRgNameMap         rg_name;                         //所有生效的SLA_RG_RULE对应的RG_NAME.作为批价向前置机返回的SLA-RG计算结果（所有生效的SLA_RG_RULE对应的RG_NAME） wangchh20120208ADD
+        SAccumulatePriceUrlAddrList url_accumulate_alarm;   //URL累计提醒   wangchh20120221ADD
+        SAccumulatePriceAocCodeList aoc_accumulate_alarm;   //AOC累计提醒   wangchh20120221ADD
+        SOcsRejectAlert             ocs_reject_alarm;       //拒绝接续提醒
+	}
+	
+	//*************************************************************************//
+	//* END * END * END * END * END * END * END * END * END * END * END * END *//
+	//*************************************************************************//
+	
+	
+	//*************************************************************************//
+	//* BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN * BEGIN *//
+	//*************************************************************************//
+	
+	///////////////////////////////////////////////////////////////////////////
+	//                                                                       //
+	//                                                                       //
+	//                    这部分是批价需要前置机保存数据                     //                                                 //
+	//                    SOutInFecXdr                                       //
+	//                                                                       //
+	//                                                                       //
+	///////////////////////////////////////////////////////////////////////////
+	
+	//描述反算过程中点卡积分免费资源资产的使用情况（包含积分使用值和资源使用值）。hujh20111026ADD
+	struct STransformFreeresInfo
+    {
+        int64 done_code;                       //产品订购唯一实例
+        int32 freeres_item_id;                 //免费资源科目
+        int32 item_id;                         //计费科目
+        int64 asset_value;                     //资产使用量 
+        int64 resource_value;                  //资源使用量 
+        int64 valid_date;                      //生效日期   hujh20111107ADD
+        int64 expire_date;                     //失效日期   hujh20111107ADD
+        int32 freeres_type;                    //免费资源类型 hujh20120213ADD
+    } 
+        list vector<STransformFreeresInfo> STransformFreeresInfoList;	
+    
+    //统计一个会话过程中的费用和优惠费用，用于通话后提醒  gongw20111114ADD
+    struct SAfterMakeCall
+    {
+      int64 fee;                         //费用
+      int64 reduce_fee;                  //优惠费用
+      int32 measure_id;                  //（货币）度量定义
+      int32 charge_item_id;              //计费科目
+    } 
+      list vector<SAfterMakeCall> SAfterMakeCallList;
+
+    //描述反算过程中(仅用于)小区内提醒判断。   gongw20111107ADD
+    //{产品编号,小区代码}{}…
+    struct SZoneAlert
+    {
+        int64  product_id;    //产品编号
+        int32  zone_alert;    //小区代码
+    }
+        list vector< SZoneAlert > SZoneAlertList;
+        
+    //描述反算过程中定价（生效）提醒。
+    //{定价产品编号,定价ID}{}…    
+    struct SPackageAlert
+    {
+        int64  product_id;    //定价产品编号
+        int32  price_id;      //定价ID
+    }
+        list vector< SPackageAlert > SPackageAlertList;
+
+    // 资产告警标志 主要用于描述反算过程中资产提醒 在U-T包中告警过的信息,在下一个U-T包中不再告警  wangch20120104ADD
+    struct SAssetAlert
+    {
+        int64 acct_id;           // 账户编号
+        int32 item_code;         // 资产虚科目编号
+        int32 alarm_rule_dtl_id; // 告警规则明细编号
+    }
+        list vector<SAssetAlert> SAssetAlertList;
+
+    // ACCUMULATE_ADJUST_MIDDLE_INFO   wangch20120508ADD
+    // 描述反算过程中累计调整 的相关信息，用于保底、封顶等。
+    struct SAccumulateAdjustMiddleInfo
+    {
+        int64 product_id;       // 定价产品编号
+        int32 price_id;         // 定价编号
+        int64 left_value;       // 累计调整剩余值,只在U-T/T更新
+        int32 measure_id;       // 度量单位
+    };
+        list vector<SAccumulateAdjustMiddleInfo> SAccumulateAdjustMiddleInfoList;
+
+    // 记录每个科目，前一条分话单的最后一段标批信息 zhourh20120815ADD
+    // 用来实现NT需求中计费单位不一致问题
+    struct SPreStdChargingInfo
+    {
+        int64 ori_start_res; // 下次原始的标准起始资源量
+        int64 inter_start_res; // 下次内部的标准起始资源量
+        int32 charging_unit; // 计费单位
+        int32 measure_id; // 度量id
+        int64 standard_product_id; // 标批产品ID
+    };
+        map aimap<int32,SPreStdChargingInfo> SPreStdChargingInfoMap; // key:科目ID
+	
+	//描述反算过程中保存在前置机的中间结果，使用方式SInOutFecXdr 相反。hujh20111026ADD
+    struct SOutInFecXdr
+    {
+        STransformFreeresInfoList       transform_freeres_info;       //描述反算过程中点卡积分免费资源资产的使用情况 
+        SAfterMakeCallList              after_makecall_info;          //统计一个会话过程中的费用和优惠费用，用于通话后提醒  gongw20111114ADD
+        SZoneAlertList                  zone_alert_list;              //反算过程中(仅用于)小区内提醒判断。    caiwei20111123ADD
+        SPackageAlertList               package_alert_list;           //反算过程中定价（生效）提醒  caiwei20111123ADD
+        SAssetAlertList                 asset_alert_list;             //描述反算过程中资产提醒。  wangch20120104ADD
+        SAocAssetList                   aoc_asset_list;               //描述反算过程中资产AOC提醒 的详细信息。  wangch20120104ADD
+        SUrlAssetList                   url_asset_list;               //描述反算过程中资产URL重定向 的详细信息。 wangch20120104ADD
+        SAccumulatePriceUrlAddrList     url_accumulate_alarm;         //URL累计提醒   wangchh20120221ADD
+        SAccumulatePriceAocCodeList     aoc_accumulate_alarm;         //AOC累计提醒   wangchh20120221ADD
+        int32                           auth_type;                    //接续标志枚举值  yuzhongj20120312ADD
+        SAccumulateAdjustMiddleInfoList ACCUMULATE_PRICE_ADJUST_INFO; //累计调整中间信息,U-T'包、U-U'包、T包作为输入使用。其中，U-T'和T包更新。 wangch20120508ADD
+        SPreStdChargingInfoMap          pre_std_charging_info;        //记录每个科目，前一条分话单的最后一段标批信息  zhourh20120815ADD
+        int32                           redirect_gsu_flag;            //GSU标志
+    }	
+    
+    //增加账期定义 caiwei20120610ADD
+    struct SAcctBillCycle
+    {
+        int16 cycle_unit;       //帐期周期间隔
+        int16 cycle_type;       //帐期周期类型
+        int64 first_bill_date;  //首账期截止时间
+        int64 bill_valid_date;  //账期生效日期
+        int64 bill_expire_date; //账期失效日期
+        int32 cycle_count;      //记录账期的周期数 caiwei20120815ADD
+    }
+    
+    //免催免停标识  caiwei20120717ADD
+    struct SExemptType
+    {
+        int32 BILLING_TYPE;  //适用计费方式，枚举值：0.预付费prepaid only；1.后付费postpaid only；-1.不关注即prepaid & postpaid both。    
+        int32 EXEMPT_TYPE;   //免催免停标志
+    }
+
+	
+	///////////////////////////
+	//用户基本信息
+	//////////////////////////
+	struct SUserInfoBase
+	{
+		int32	    CUST_TYPE;						//客户类型
+		int64	    CUST_ID;						//客户编号
+		int64	    ACC_ID;							//账户编号
+		int64	    USER_ID;						//用户编号
+		int64       DEFAULT_ACC_ID;                 //默认支付帐户（批价话单不填，或填BILLABLE_ACC_ID）20111024liuhj(billing)ADD
+		int64	    BILLABLE_ACC_ID;				//支付账户编号
+		int32	    USER_TYPE;						//用户类型
+		int32	    LISTEN_LANGUAGE;			    //听维度的语言能力
+		int32	    READ_LANGUAGE;				    //读维度的语言能力
+		int32	    BRAND;							//品牌
+		int32	    CUST_BIRTHDAY_FLAG;		        //客户生日
+		int32	    CUST_GENDER;					//客户性别
+		int32	    CUST_JOBCODE;				    //客户工作代码
+		int32	    USER_LIFE_CYCLE;		        //用户生命周期状态
+		int32       CUST_AGING;                     //客户级网龄     linbc20111108ADD
+        int32       ACC_AGING;                      //帐户级网龄     linbc20111108ADD
+        int32       USER_AGING;                     //用户级网龄     linbc20111108ADD		
+		string<1>	FIRST_ACTIVATE_FLAG;	        //话单首次激活标识，0--不是，1--首次激活		
+		int64   	CREATE_DATE;		            //用户入网时间		chenlong20120305MODIFIED data type
+		string<7>	HPLMN1;			                //一级归属局
+		string<7>	HPLMN2;			                //二级归属局
+		string<7>	HPLMN3;			                //三级归属局
+		int32       CUSTOMER_SEGMENT;               //客户等级  huangyl20111011ADD	
+		int32       USER_SEGMENT; 
+		int32       USER_CYCLE_EXPIRE_DATE;	        //用户状态失效时间点  chengl20111207ADD
+		SExemptType EXEMPT_TYPE;                    //免催免停标志   caiwei20120717ADD
+		int64       NEXT_USER_CYCLE;                //预期下一用户状态   chengl20120208ADD dengpy20120901modify int32->int64
+        int64       NEXT_USER_CYCLE_EXPIRE_DATE;    //预期下一状态失效时间   chengl20120208ADD dengpy20120901modify int32->int64
+        int32       CUST_CLASS;                     //客户种类  0:Person；1:Family；2:Group；-1: ignore    chengl20120216ADD
+        int64       BILL_BEGIN_DATE;                // Bill cycle begin date  hujh20120524ADD
+        int64       BILL_END_DATE;                  // Bill cycle end date    hujh20120524ADD
+        SAcctBillCycle acct_bill_cycle;             //用户账期计费周期   caiwei20120610ADD
+        int64       REGUIDE_USAGE_ACCT_ID;          //代付账户编号 caiwei20120610ADD
+        int64       REGUIDE_USAGE_USER_ID;          //代付用户编号 caiwei20120610ADD
+        string<64>	USER_NUMBER;				    //用户号码    wangjing20120610ADD
+        string<15>	IMSI;					        //IMSI        wangjing20120610ADD
+        string<64>  BAK_REGUIDE_USER_NUMBER;        //Re-guide Usage是被代付用户号码   wangjing20120610ADD
+        int16       USER_OPERATOR_ID;               //计费用户归属运营商ID   wangjing20120610ADD
+        int32       SPEC_ACCT_TYPE;                 //用户的特殊帐户类型   wangjing20120717ADD
+        int32       REGUIDE_USAGE_SPEC_ACCT_TYPE;   //被代付用户的特殊账户类型 wangjing20120718ADD
+        
+        //上海版本专用字段 
+        int32         USER_SPEC_TYPE;           //用户特殊类型
+	};
+	
+	////////////////////////////////////////////////////////////////////////////
+	//对端号码分解，主要给语音业务使用
+	//对端号码结构	接入码+国际字冠+国家代码+MNPXXY-Prefix+*222(被叫付费前缀)+裸号(已转移到SSubCommon结构下OPP_USER_NUMBER)
+	////////////////////////////////////////////////////////////////////////////
+	struct	SApartOppNumber
+	{
+		string<16>	ACCESS_NUMBER;		        //特殊接入码
+		string<16>	IDD_NUMBER;				    //国际字冠
+		string<8>	COUNTRY_CODE;				//国家代码
+		string<8>	MNP_PREFIX;					//MNP前缀码
+		string<8>	FPH_CODE;					//被叫付费前缀
+		string<8>   NP_CODE;                    //预后付费标志前缀
+        string<8>   P_CODE;                     //国内直拨码		
+	}
+		
+	//上海版本专用字段
+    struct SPbxInfo
+    {
+        string<10>    CTX_CALLER_GROUP;		    //CTX群号，详单展示用
+        int64         CARRY_SERVICE;		    //承载业务，详单展示用
+        int32         SERVICE_SCOPE;		    //业务类型，详单展示用
+        int64         TERM_SERVICE;		        //终端业务，详单展示用
+        int64         CALLER_DEV_TYPE;		    //主叫设备类型，详单展示用
+        int64         CALLEE_DEV_TYPE;		    //被叫设备类型，详单展示用
+        int16         CALL_SCOPE;		        //呼叫类别，详单展示用     
+    }
+    
+    //上海版本专用字段
+    struct SVcInfo
+    {
+        string<24>    VC_NUMBER;		        //充值主叫号码，固定电话带带零区号，移动不带国家号码（86）
+        int16         TRADE_TYPE;		        //充值方式：0 自动;1 手工。
+        int16         TRADE_STATE;		        //充值卡充值状态：0 充值异常;1 充值成功。
+        string<20>    CARD_ID;                  //充值卡序列号 
+        int16         VC_TYPE;		            //充值卡类型：0 手机充值卡;1 IP充值卡(全国)
+        int64         CARD_CHARGE;		        //充值卡面额  
+        int16         VC_LOCATION;		        //充值卡位置类型：0为本地充值;1为异地充值
+        string<7>     CARD_HPLMN1;		        //归属地的省局代码
+        string<7>     CARD_HPLMN2;       		//归属地市局代码    
+    }
+    
+	//////////////////////////////////////////////
+	//原则：
+	//1.语音业务分话单值相同字段，
+	//2.语音业务特有字段
+	//////////////////////////////////////////////
+	struct	SGsmSpecInfo
+	{
+		string<64>	A_NUMBER;				    //A号码
+		string<16>	MSRN;						//被叫动态漫游号
+		string<3>	SCP_ID;						//SCP代码
+		string<20>	MSC_ID;					    //交换机代码    lujw20111017modified
+		string<11>  VLR_ID;                     //VLR_ADDRESS编码
+        string<11>  LOCATION_ID;                //LOCATION编码
+		string<48>	IN_TRUNKID;			        //入路由
+		string<48>	OUT_TRUNKID;		        //出路由	
+		int32       VOIP_CDR_FLAG;              //VOIP服务话单标示，由前置机填写    wangjing20120116ADD   huangyd20120507modify
+		string<20>  OPP_MSC_ID;                 //对端用户交换机代码   huangyl20120427ADD
+		string<11>  OPP_VLR_ID;                 //对端用户VLR_ADDRESS编码  huangyl20120427ADD
+		string<11>  OPP_LOCATION_ID;            //对端用户LOCATION编码   huangyl20120427ADD
+		
+	//上海版本专用字段 Begin
+        string<30>    TRANSLATED_NUMBER;		//用户拨的电话号码
+        int32         VIDEO_TYPE;		        //可视电话标志. 0：非视频呼叫; 1：视频呼叫
+        string<24>    MOC_ID;		            //主叫内部编码，存放vpmn话单主叫短号
+        string<24>    MTC_ID;		            //被叫内部编码，存放vpmn话单被叫短号
+        SPbxInfo      GSM_PBX_INFO;             //PBX业务信息字段		
+        SVcInfo       GSM_VC_INFO;              //VC业务信息字段
+        string<30>    OPP_NOACCESS_NUMBER;		//去接入号的对端号码
+        int32         ROAM_NET_TYPE;   		    //漫游网络类型
+        int16         B_ROAM_ECONOMICALLY_RATING_FLAG;		//最优费用比对标识
+        int32         LFEE_ADD;                 //D文件中字段,集团提供文档中没有明确含义，但需要保存  zhangqd20120719ADD
+        int32         UP_RECNUM;                //上发D文件中的记录号    zhangqd20120719ADD
+        int32         DN_RECNUM;                //下发D文件中的记录号    zhangqd20120719ADD
+
+     //上海版本专用字段 End     
+	}
+	
+	//////////////////////////////////////////////
+	//原则：
+	//1.语音业务分话单值不同字段，
+	//2.语音业务特有字段
+	//////////////////////////////////////////////
+	struct	SGsmInfo
+	{
+
+		int32	CALL_TYPE;						//呼叫类型
+		int16	TOLL_TYPE;						//长话类型
+		int16	TOLL_RATE;						//长话费率		
+		int32   TRANSFER_CAPABILITY;            //传输能力,应用于传真、视频业务
+		int32   LAYER_PROTOCOL;                 //传输端口,应用于传真、视频业务		
+		int32   CALLING_PARTYS_CATEGORY;        //主叫用户类别（例如运营商、公用电话、普通用户）
+		int16   UCB_FLAG;                       //The flag for USSD  call back 0：normal service 1: UCB service  20111025lujwADD
+	}
+	
+	//////////////////////////////////////////////
+	//原则：
+	//1.短信业务分话单值相同字段，
+	//2.短信业务特有字段
+	//////////////////////////////////////////////
+	struct	SSmsSpecInfo
+	{
+		string<8>	SMS_ID;					    //短信唯一标示			
+		string<32>  SCCP_ADDRESS;               // sccp地址
+		string<10>	GATEWAY;				    //网关代码		char	10
+		string<10>	CFW_GATEWAY;		        //前转网关代码		char	10
+		string<10>	OPP_GATEWAY;		        //对端网关代码		char	10
+		string<3>	SSR;				        //短消息的状态报告指示		char	3
+		string<3>	PID;				        //短消息的协议类型		char	3
+		string<3>	DCS;				        //短消息内容的编码方案		char	3		
+		int32	    RETRY_TIMES;			    //重试次数		int32	
+		int32	    PRIOR_LEVEL;			    //优先级		int32	
+		string<6>	ISMG_ID;			        //短信网关代码		char	6
+	//上海版本专用字段 Begin
+        string<20>    MOC_BILL_TYPE;		    //MOC_BILL_TYPE
+        string<20>    MTC_BILL_TYPE;		    //MTC_BILL_TYPE
+        int16         UD_HI;		            //长消息标识
+        int64         UD_HID;		            //长消息参考号
+        int64         UD_PNUM;                  //当前包序号
+        int64         UD_CUR_PNO;		        //当前包序号
+        int32         SMS_TYPE;		            //短消息的类型，0表示普通不需要状态报告的短消息，1表示需要状态报告的短消息，2表示状态报告。
+        int32         OPP_USER_TYPE; 		    //对方运营商用户类型
+    //上海版本专用字段 End	
+		
+	}
+	
+	//////////////////////////////////////////////
+	//原则：
+	//1.短信业务分话单值不同字段，
+	//2.短信特有字段
+	//////////////////////////////////////////////
+	struct	SSmsInfo
+	{
+		int32	INFO_TYPE;		//短信对端类型 20110622
+	}
+	
+	//////////////////////////////////////////////
+	//原则：
+	//1.数据业务分话单值相同字段，
+	//2.数据业务特有字段
+	//////////////////////////////////////////////
+	
+	//RGG群编号值存放
+	struct SRggInfo
+	{
+ 	int32  RG_GROUP_ID;
+	}
+	map aimap<int32,SRggInfo>  SRggInfoMap;   //<RG_TYPE_ID, RG_GROUP_ID>
+	
+	//上海版本专用字段
+    struct STarffQcs
+    {
+        string<1>     TARIFF;		            //费率级别的代号
+        string<256>   TARIFF_SEQ_ID;		    //TARIFF_LIST流水号
+        int16         QOS_REQ_RELIABILITY;		//QOS请求可靠性
+        int16         QOS_REQ_DELAY;		    //QOS请求延时
+        int16         QOS_REQ_PRECEDENCE;		//QOS请求优先级
+        int16         QOS_REQ_PEAK;		        //QOS请求峰值传送级别
+        int16         QOS_REQ_MEAN;		        //QOS请求平均传送级别
+        int16         QOS_NEG_RELIABILITY;		//QOS协商后可靠性
+        int16         QOS_NEG_DELAY;		    //QOS协商后延时
+        int16         QOS_NEG_PRECEDENCE;		//QOS协商后优先级
+        int16         QOS_NEG_PEAK;		        //QOS协商后峰值传送级别
+        int16         QOS_NEG_MEAN;		        //QOS协商后平均传送级别
+        int64         DATA_FLOW_UP;   		    //上行数据流量
+        int64         DATA_FLOW_DOWN;		    //下行数据流量
+        int64         BEGIN_TIME;		        //开始时间
+        int64         TARIFF_DURATION;		    //时长
+    }
+        list vector<STarffQcs> STarffQcsList;
+    //上海版本专用字段 
+    struct SWlanInfo
+    {
+        string<16>    HOSTSPOT_ID;		        //热点标识
+        string<16>    AC_ADDRESS;		        //AC的IP地址，详单展示用
+        string<16>    AS_ADDRESS;		        //AS的IP地址，详单展示用
+        int64         HOME_CARRIER;		        //计费用户的归属运营商，详单展示用
+        int64         ROAM_CARRIER;		        //用户漫游网络所在的运营商，详单展示用
+    }
+	
+	struct	SGprsSpecInfo
+	{
+		string<16>	 CG_ADDR;			        //数据业务的CG地址
+		string<256>	 URL;					    //用户上网用的URL
+		int32	     CALLER_INDICATE;			//发起方标识		int32	
+		string<32>	 SGSN_ADDRESS;			    //SGSN地址		char	32
+		int32	     TRIGGER_TYPE;				//MSCC触发类型		int32	20120508susbmodify
+		int32	     MSNC;						//MSNC		int32	
+		string<5>	 RAC;					    //路由区代码		char	5
+		string<10>	 CHARGING_ID;			    //计费标识		char	10
+		string<32>	 GGSN_ADDRESS;			    //GGSN地址		char	32
+		string<64>	 APN_NI;					//接入网络标识		char	64
+		string<64>	 APN_OI;					//接入运营商标识		char	64
+		int32	     PDP_TYPE;					//PDP类型		int32	
+		string<32>	 PDP_ADDRESS;			    //PDP协议地址		char	32
+		int32	     CAUSE_CLOSE;				//记录关闭原因		int32	
+		string<1>	 COMBINE_RESULT;			//合并结果指示		char	1
+		string<4>	 CHARGING_CHARACTERISTICS;	//用户数据中的计费属性 		char	4
+		string<1>	 CC_SELECTION_MODE;			//计费特性的选择模式		char	1
+		string<32>	 SGSN_PLMN;					//记录过程中使用的SGSN PLMN 标识 zhubo20120719modify the data type		char	6
+		string<1>	 PARTIAL_TYPE_INDICATOR;	//话单的标志类型		char	1
+		string<1024> REC_SEQ_NO;				//GGSN中部分话单顺序号		string	
+		string<64>	 LOCAL_REC_SEQ_NO;			//某节点产生任何种类CDR的顺序号		char	64
+		string<1>	 SYSTEM_TYPE;				//标识网络类型		char	1
+		string<20>	 GGSN_ID;				    //GGSN Node ID		char	20
+		string<20>	 SGSN_ID;				    //SGSN Node ID 		char	20
+		string<256>	 SERVICE_USAGE;			    //服务使用业务的详细使用情况		string							
+		int32	     PARTIAL_NUM;			    //分话单数		int32	
+		SRggInfoMap  RGG_INFO_MAP;              //用户订购RGG映射表 	
+		string<3>    MULTI_SIM_SEQ;             //多卡业务的序号
+		I2iMap       CURRENT_RG_MAP;            //当前使用RG全集   wangjing20120726ADD
+		
+    //上海版本专用字段 Begin
+        STarffQcsList TARIFF_QCS_LIST;          //对方运营商用户类型
+        SWlanInfo     GPRS_WLAN_INFO;           //WLAN业务信息字段 
+    //上海版本专用字段 End
+        
+
+	}
+	
+	//////////////////////////////////////////////
+	//原则：
+	//1.数据业务分话单值不同字段，
+	//2.数据业务特有字段
+	//////////////////////////////////////////////
+	struct	SGprsInfo
+	{
+//		SRgChargeInfo	RG_CHARGE_INFO;		    //RG信息
+		string<256>	 REDIRECT_ADDRESS;			//重定向地址		
+		int64	     DEAL_DATETIME;			    //char	14
+		int32	     APNNI_ID;		            //APNNI_CODE类型	20110622
+		int32	     RG_TYPE;		            //RG类型			20110622
+		int32        RGG_GROUP_ID;          //RGG分组群编号
+        int32        RGG_FINISHED_FLAG;     //RGG话单生命周期控制标识 
+        int32        BEARER_ID;             //PDP序号      qiuzhq20111012ADD
+        int32        UP_RATING;             //上行速率     zhubo20111017ADD
+        int32        DL_RATING;             //下行速率     zhubo20111017ADD
+        string       RULE_NAME;             //PCC rule名字 zhubo20111017ADD
+        string       RULE_BASE_NAME;        //PCC rule预定义组名   zhubo20111017ADD
+        int32        REPORT_REASON;         //PCC rule预定义组名   zhubo20111017ADD
+        int32        REDIRECT_FLAG;         //重定向标记    yuwei20111123ADD
+        string       BEARER_CODE;           //PDP ID号(唯一标识) yuwei20111214ADD  wangyl20120719modify the type
+        int32        GPRS_PROCESS_ID;       //数据业务首次激活标识 zhubo20120726ADD
+				int16        NO_REDIRECT;			//是否需要重定向标识	huangkai20120830ADD
+				int64        MAX_BANDWIDTH_UL;      //最大上行带宽    zhubo320121112ADD
+        int64        MAX_BANDWIDTH_DL;      //最大下行带宽    zhubo320121112ADD
+        int64        GRANTED_BITRATE_UL;    //实际上行速率    zhubo320121112ADD
+        int64        GRANTED_BITRATE_DL;    //实际下行速率    zhubo320121112ADD
+        int64        APN_MAX_UL_RATE;       //网元传送给前置机的APN的最大上行速率   zhubo320121112ADD
+        int64        APN_MAX_DL_RATE;       //网元传送给前置机的APN的最大下行速率   zhubo320121112ADD
+	}
+	
+	//上海版本专用字段 
+    struct SMmsInfoEx
+    {    
+        int64         RECEIVE_TIME;		        //接收时间
+        string<32>    RECEIVE_ADDRESS;		    //接收地址
+        string<32>    SEND_ADDRESS;		        //发送地址
+        int64         SET_TIME;		            //设置时间
+        string<5>     CONTENT_TYPE;		        //内容类型
+        int16         MM_CLASS;                 //彩信类型
+        int16         INFO_LEVEL;		        //消息等级
+        int16         REPORT_TYPE;		        //报告类型: 0:无发送报告和阅读报告请求; 1:请求发送报告
+        int16         ADDRESS_HIDE;		        //地址隐藏标记: 0:没有设定地址隐藏;1:设定地址隐藏。
+        int16         SAFE_LEVEL;		        //安全等级
+        int16         CONTENT_SW;		        //内容适配格式转换标记
+        int16         STAT_TYPE;		        //统计类型
+        string<24>    TRANSMIT_DN;		        //转发的手机号码
+        int16         TRANSMIT_TYPE;		    //转发复制类型
+        int64         STORE_TIME;		        //存储时间
+        string<10>    RECEIVE_MMSC_ID;		    //接受彩信中心ID  
+        string<32>    MOBILE_ADDRESS;           //发送/接收方地址
+    }
+	
+//////////////////////////////////////////////
+	//原则：
+	//1.彩信业务分话单值相同字段，
+	//2.彩信业务特有字段
+	//////////////////////////////////////////////
+	struct	SMmsSpecInfo
+	{
+		int32	     MM_TYPE;			        //MM话单类型		int32	
+		//string<20> MMS_ID;			        //彩信ID		char	20
+		string<20>	 MMSC_ID;			        //彩信中心ID		char	20
+		string<6>	 FORWARD_ISMG_ID;	        //前转网关代码		char	6
+		int32	     CARRY_TYPE;				//承载方式		int32	
+		string<64>   DOMAIN_NAME;               //域名        linbc20111031ADD
+	//上海版本专用字段 Begin
+        string<10>    GATEWAY;		            //网关名字
+        string<10>    CFW_GATEWAY;		        //前传网关名字
+        string<10>    OPP_GATEWAY;		        //对端网关名字
+        SMmsInfoEx    MMS_SPEC_INFO_EX;	        //彩信业务信息字段 	
+    //上海版本专用字段 End 
+	}
+	
+	//////////////////////////////////////////////
+	//原则：
+	//1.彩信业务分话单值不同字段，
+	//2.彩信业务特有字段
+	//////////////////////////////////////////////
+	struct	SMmsInfo
+	{
+		int32 test;                //delete!!!!!!!!
+		int32 INFO_TYPE;		   //20110622
+		int32 CHARGE_TYPE;	       //20110622
+		int32 APPLICATION_TYPE;    //应用类型
+	}
+	
+	//上海版本专用字段 
+    struct SLbsInfo
+    {
+        int16         REQUEST_TYPE;	            //请求类型                                                      
+        int16         CALL_NUMBER;	            //呼叫号码                                                                                                                     
+        int32         SECURITY;		            //安全级别                                                                                        
+        int16         QOS_TYPE;		            //QOS服务级别                                                                      
+        int16         CORRECTION;		        //定位精度                                                                                       
+        string<20>    LSP_ID_INPUT; 	        //业务接入LSP-ID                                                                                                       
+        string<20>    LSP_ID_LOCAL; 	        //定位LSP-ID                                                                                                           
+        string<30>    RESULT_X;		            //定位结果X                                                                                                                    
+        string<30>    RESULT_Y;		            //定位结果Y                                                                                                                    
+        string<30>    COORDINATION_TYPE; 	    //坐标系类型   
+    }
+	
+	//////////////////////////////////////////////
+	//原则：
+	//1.增值业务分话单值相同字段，
+	//2.增值业务特有字段
+	//////////////////////////////////////////////
+	struct	SIsmpSpecInfo
+	{
+		int32 test;  // delete!!!!!!!!
+	//上海版本专用字段 Begin
+        int16         SOURCE_TYPE;		        //话单源类型
+        string<6>     MISC_ID;		            //MISC代码                                                                                                                             
+        int16         DISCOUNT;		            //DISCOUNT                                                                                                                                 
+        int32         SERVICE_ATTR;		        //业务属性                                                                                                                             
+        SLbsInfo      ISMP_LBS_INFO;	        //ISMP业务信息字段                                                                                                                       
+        string<6>     CH_CODE; 		            //CH代码                                                                                                                               
+        string<32>    DEV_CODE; 		        //设备代码                                                                                                                             
+        int64         DNLOAD_DURATION;	        //下载时长                                                                                                                         
+        int64         VALID_TIMES;		        //有效次数                                                                                                                             
+        int64         ONLINE_DURATION;	        //有效使用时长                                                                                                                     
+        string<24>    TRAN_ID;		            //点数消费序列号                                                                                                                       
+        string<24>    CHARGEUP_NUM;		        //充值序列号                                                                                                                       
+        string<24>    IP_ADDRESS;		        //计费方IP                                                                                                                         
+        string<24>    OPP_IP_ADDRESS;	        //对端方IP                                                                                                                     
+        string<20>    CP_CODE;		            //内容提供商代码                                                                                                                       
+        string<10>    DELV_SERVER_CODE;	        //服务器代码                                                                                                                   
+        int64         CONTENT_SIZE;		        //内容文件大小                                                                                                                         
+        string<10>    TERM_TYPE;		        //终端类型                                                                                                                             
+        string<10>    VIDEO_CODE_TYPE;	        //视频编码方式                                                                                                                 
+        string<10>    AUDIO_CODE_TYPE;	        //音频编码方式                                                                                                                 
+        string<32>    AUTHENTICATE_NO;	        //鉴权编号                                                                                                                     
+        int64         SERVICE_BILLING_ID;       //服务计费编号                                                                                                                 
+        string<20>    PKG_BUSINESS_CODE;        //PKG业务代码                                                                                                                  
+        string<10>    GATEWAY;		            //网关名字                                                                                                                             
+        string<10>    CFW_GATEWAY;		        //前传网关名字                                                                                                                     
+        string<10>    OPP_GATEWAY;		        //对端网关名字                                                                                                                     
+        int32         CARRY_TYPE;		        //承载方式                                                                                                                             
+        string<4>     SERVER_PROV;		        //业务平台所在省代码 
+    //上海版本专用字段 End  
+
+	}
+	
+	//////////////////////////////////////////////
+	//原则：
+	//1.增值业务分话单值不同字段，
+	//2.增值业务特有字段
+	//////////////////////////////////////////////
+	struct	SIsmpInfo
+	{
+		int32      ATTENDED_NUMBER;      //实际人数
+		int32      BOOKED_NUMBER;        //预定人数
+		int32      SCALING;              //预定时长
+		int32      CONTENT_TYPE;         //彩铃内容类别
+        string<1>  EVENT_TYPE;           //彩铃事件类型
+        int64      DATE_STAMP;           //第一次发送时间戳    huangyl20111012ADD
+        int32      CHANNEL_TYPE;         //渠道类型            huangyl20111012ADD
+        int32      SHARING_TYPE;         //共享类型            huangyl20111012ADD
+        string<16> SHARING_NAME;         //共享名称            huangyl20111012ADD
+        string<64> ORI_DL_NUMBER;        //原始下载彩铃号码    zhubo20120627ADD
+        int32      SOURCE_TYPE;          //话单源类型          zhubo20120627ADD
+        
+        //上海版本专用字段
+        int32      APPLICATION_TYPE;     //应用类型           liufengping20120418ADD
+	}
+	
+	
+	//////////////////////////////////////////////
+	//原则：
+	//1.gs业务分话单值不同字段，
+	//2.gs音业务特有字段
+	//////////////////////////////////////////////
+	struct	SGsSpecInfo
+	{
+		int32 test;  // delete!!!!!!!!
+	}
+	
+	//////////////////////////////////////////////
+	//原则：
+	//1.GS业务分话单值不同字段，
+	//2.GS音业务特有字段
+	//////////////////////////////////////////////
+	struct	SGsInfo
+	{
+		int32 test;  // delete!!!!!!!!
+	}
+	
+	//////////////////////////////////////////////
+	//原则：
+	//1.帐务使用的固费和一次性费用话单信息
+	//2.帐务固费和一次性费用的特有字段
+	//////////////////////////////////////////////
+	
+	// 帐务话单的公用字段    liuhj20120305ADD
+    struct SBillingCommon
+    {
+        //话单级标识
+        int16               CHANNEL_ID;             //渠道编号  liuhj20120611ADD
+        int16               PROCESS_FLAG;           //标识帐务话单生成时已经做过哪些处理
+                                                    //0：已扣费，未优惠;
+                                                    //1：未扣费，未优惠;
+                                                    //2：已扣费，已优惠;
+                                                    //3：未扣费，已优惠
+        int16               OWNER_TYPE;             //帐务产品的订购类型:0用户，1帐户，2群组
+        //帐户信息(话单级)
+        int64               BILL_BEGIN_DATE;        // Bill cycle begin date
+        int64               BILL_END_DATE;          // Bill cycle end date
+        int32               BILL_CYCLE_LENGTH;      // Bill cycle days用来记录帐户帐期长度的标识。
+        int16               BILL_CYCLE_TYPE;        // Bill cycle type: day, week, month, year, etc.
+
+        //扣费信息(话单级)
+        int16               DEDUCT_RESULT;          // 话单级扣费结果：0成功，1失败（固费可不填)  liuhj20120306MODIFY the comments
+        int64               DEDUCT_TIME;            // 扣费时间
+        int64               PRE_BALANCE;            // balance before deduct
+        int64               CUR_BALANCE;            // current balance after deduct
+    }
+    
+    //业务信息(一次性、外部费用)  liuhj20120305ADD
+    struct SBillingBusiness
+    {
+        string              SO_NBR;                 //业务工单号  
+        string              OUT_SO_NBR;             //外围工单号  liuhj20120611ADD
+        int32               BUSI_CODE;              //业务代码
+        int16               SERVICE_TYPE;           //用来记录业务类型的标识: 0：other，1:recurring，2:on demand  20120717liuhj(billing)ADD
+        int64               OPERATION_TIME;         //Operation time for one time charge
+        string<64>          TOPUP_NUMBER;           //冲值号码(对端号码)
+        int32               PRICING_PLAN_ID;        //定价计划(业务信息中有则填)
+        int32               PRODUCT_OFFER_ID;       //销售品编号(业务信息中有则填)        
+    }
+    
+    //帐务产品订购信息(固费)  liuhj20120305ADD
+    struct SBillingProd
+    {
+        int64               PROD_ID;                // Product ID
+        int32               PRODUCT_OFFER_ID;       // Product offer ID
+        int16               IS_MAIN;                // 0: Not main product, 1: Main product, 2: Global product
+        int16               PACKAGE_TYPE;           // 0: recurring charge package; 1: one time package
+        int64               PROD_VALID_DATE;        // Product valid date
+        int64               PROD_EXPIRE_DATE;       // Product expire date
+    }
+    list vector<SBillingProd> SBillingProdList;
+    
+     //冲销信息   liuhj20120305ADD
+    struct SBillingDeductLog
+    {
+            int64   acct_id;                    //帐户编号
+            int64   serv_id;                    //用户编号(帐本)
+            int64   asset_id;                   //资产编号
+            int64   product_id;                 //产品编号(账单)
+            int64   woff_fee;                   //本次冲销费用
+            int64   woff_tax_fee;               //本次冲销税费
+            int64   prod_begin_date;            //产品周期起始时间
+            int32   asset_item_code;            //资产科目编号
+            int32   measure_id;                 //货币编号
+            int32   bill_item_code;             //科目代码
+            int16   billing_type;               //付费类型(账单)
+            float   exchange_rate;              //汇率
+    }
+            list vector<SBillingDeductLog>  SBillingDeductLogList;
+            
+    //预算信息  liuhj20120305ADD
+    struct SBillingBudgetLog
+    {
+            int64   acct_id;                    //帐户编号
+            int64   owner_id;                   //预算使用对象
+            int64   primary_key;                //ABM预算流水号
+            int64   product_id;                 //产品编号(账单)
+            int64   budget_product_id;          //产品编号(预算)
+            int64   woff_fee;                   //本次冲销费用
+            int64   woff_tax_fee;               //本次冲销税费
+            int64   budget_valid_date;          //有效时间
+            int64   budget_expire_date;         //失效时间
+            int64   prod_begin_date;            //产品周期起始时间
+            int32   bill_item_code;             //账单科目编码
+            int32   budget_item_code;           //预算科目编码
+            int32   measure_id;                 //预算货币编码
+            int16   owner_type;                 //预算使用对象类型
+            int16   billing_type;               //付费类型
+            float   exchange_rate;              //汇率
+    }
+    list vector<SBillingBudgetLog>  SBillingBudgetLogList;
+	
+	//帐务产品级扣费结果  liuhj20120305ADD
+    struct SBillingDeductDtl // Product level deduct detail
+    {
+        int64               PROD_ID;            // 产品编号
+        int32               PRODUCT_OFFER_ID;   // 销售品编号  liuhj20120306ADD
+        int16               DEDUCT_FLAG;        // 产品扣费标识
+                                                // 0:默认值(正常扣费成功)
+                                                // 1:重新扣费成功;
+                                                // 2:彻底失败;
+                                                // 3:折算扣费;
+                                                // 4:扣费失败，计算延迟扣费(天数);
+        int32               VALID_PERIOD;       // 有效期折算天数或延迟扣费的天数
+        int16               MAX_RETRY_TIME;     // 最大扣费次数
+        int64               FIRST_DEDUCT_TIME;  // 首次扣费时间
+        int16               FAILURE_RULE_ID;    // 扣费失败处理规则编号
+        int16               DEDUCT_HIS;         // 已经重扣的次数   liuhj20120402modified the notes
+        int16               RETRY_CYCLE;        // 本次计算时的周期数 liuhj20120718ADD
+        int16               DEDUCT_COUNT;       // Deduct success count 成功扣费次数(暂不支持)
+        int64               FEE_DATE;           // 固费产品有效期  liuhuajin(billing)20120306ADD  
+        int64               ORIGINAL_FEE;       // 产品应收费用  liuhuajin(billing)20120306ADD
+        int64               BILL_FEE;           // 分帐后的产品实际费用  liuhuajin(billing)20120306ADD
+        int32               MEASURE_ID;         // 度量  liuhuajin(billing)20120306ADD
+        int16               PAY_TYPE;           // 0: 预付, 1: 后付  liuhuajin(billing)20120306ADD
+
+    }
+    list vector<SBillingDeductDtl> SBillingDeductDtlList;    
+
+    //帐务费用明细  20111024liuhj(billing)ADD
+     struct SBillingCharge
+    {
+        // 业务(一次性费用)
+        int32               NOTIFICATION_ID;    // 提醒id(仅一次性费用使用)
+        
+        // 产品(固定费用)
+        int16               DEDUCT_STS;         // 产品扣费状态  0:已扣费, 1: 未扣费
+        int64               PROD_ID;            // Product ID
+        int64               CYCLE_BEGIN_DATE;   // Product cycle begin date for recurring fee
+        int64               CYCLE_END_DATE;     // Product cycle end date for recurring fee
+        
+       // 定价(费用明细)
+        int16               PAY_TYPE;           // 0: Prepaid, 1: Postpaid
+        int32               PRICE_ID;           // Price id
+        int32               ITEM_CODE;          // Bill item
+        int32               MEASURE_ID;         // Measure ID, include currency and tax information
+        int16               INCLUDE_TAX_FLAG;   // 0:unrelated to tax;1:tax not included;2:tax included;
+        int64               BILL_FEE;           // Recurring fee or one time fee according to XDR type
+        int64               ORIGINAL_FEE;       // Product original fee, for one time charge override
+        int64               DISCOUNT_FEE;       // Discount fee
+        int64               BASE_FEE;           // 固费定价的基本费(未prorate的整周期费用)
+        int64               PRODUCT_FEE;        // 分帐前的产品明细费用(固费)              
+    }
+        list vector<SBillingCharge> SBillingChargeList;   
+        
+    //用来记录帐务优惠费用明细的结构。liuhj20120326ADD   
+     struct SBillingProm
+    {
+        int64               PROD_ID;            // 优惠产品ID
+        int32               PRICE_ID;           // 定价ID
+        int32               ADJUST_ITEM;        // 优惠科目
+        int64               CYCLE_BEGIN_DATE;   // 周期起始日
+        int64               CYCLE_END_DATE;     // 周期截止日
+        int32               BASE_ITEM;          // 参考科目
+        int64               BASE_FEE;           // 参考费用
+        int64               REF_PRODUCT_ID;     // 分摊产品
+        int32               REF_ITEM_CODE;      // 分摊科目
+        int64               PRODUCT_FEE;        // 分账前优惠费用
+        int64               DISCOUNT_FEE;       // 分账后优惠费用
+        int16               PROM_FLAG;          // 优惠类型：0，用户；1，账户；2群组
+        int16               INCLUDE_TAX_FLAG;   // 0：与税无关；1：不含税；2：含税
+        int16               PAY_TYPE;           // 0：预付，1：后付
+        int32               MEASURE_ID;         // 度量
+        int16               DEDUCT_STS;         // 扣费状态 0:已扣费, 1: 未扣费
+    }
+        list vector<SBillingProm> SBillingPromList;
+        
+    //帐务累计量日志 liuhj20120807ADD
+    struct SBillingAccumulate
+    {
+        int64   primary_key;    //记录主键.由ABM维护
+        int64   acct_id;        //帐户编号
+        int64   owner_id;       //拥有者编号 
+        int32   price_plan_id;  //定价计划ID 
+        int32   spec_id;        //业务代码
+        int32   channel_id;     //渠道ID
+        int32   item_code;      //累计量科目
+        int64   begin_date;     //起始日期
+        int64   end_date;       //结束日期
+        int64   value;          //累计值
+        int16   owner_type;     //拥有者类型
+    }
+        list vector<SBillingAccumulate> SBillingAccumulateList;
+  
+    
+    // 这部分是帐务话单的输出数据    liuhj20120305ADD
+    struct SOutBillingXdr
+    {
+        SBillingCommon          BILLING_COMMON;     // 帐务公共信息
+        SBillingChargeList      BILLING_CHARGE_DTL; // 记录费用明细
+        SBillingPromList        BILLING_PROM_DTL;   // 记录帐务优惠明细  liuhj20120326ADD
+        SBillingDeductLogList   POCKET_DEDUCT_VAL;  // 帐本冲销信息
+        SBillingDeductLogList   CREDIT_DEDUCT_VAL;  // 信用度冲销信息
+        SBillingBudgetLogList   BUDGET_VAL;         // 预算信息
+        SBillingAccumulateList  ACCUMULATE_VAL;     // 累计量明细(目前仅一次性费用)  liuhj20120808ADD
+        SBillingBusiness        BUSI_INFO;          // 业务信息(一次性和外部费用)
+        SBillingProdList        BILLING_PROD;       // 帐务产品的订购信息(固费)
+        SFreeResCreatorList     FREE_RES_CREATOR;   // 帐务扣费赠送的免费资源(固费)
+        SBillingDeductDtlList   BILLING_DEDUCT_DTL; // 帐务产品的扣费结果(固费,正常成功的可不设)
+    }
+    
+    // RevenueCode映射
+    struct SRevenueCode // 与SCharge相对应  20111024liuhj(billing)ADD
+    {
+        int64   acct_id;            // 帐户编号
+        int32   revenue_code;       // Revenue编号
+        int64   values;             // 费用
+        int16   billing_type;       //收入统计结果的预后付属性：0:预付;1:后付.  20120717liuhj(billing)20120717ADD
+        int32   measure_id;         // 度量   20120305liuhj(billing)ADD        
+    }
+    list vector<SRevenueCode> SRevenueCodeList;   
+         
+    //////////////////////////////////////////////
+	//原则：
+	//1.群个性化门限，
+	//2.群个性化共享产品字段
+	//////////////////////////////////////////////  
+	struct SGroupSpecShare 
+	{
+	    int64        done_code;                 //产品订购唯一实例
+	    int32        bill_flag;                 //占有标志 1:max limit(抢占) 2:（独占） 3：无封顶（根据批价内部需求增加）
+	    int32        item_id;                   //科目ID
+	    int64        monopoly_value;            //独占部分资源总量 20111005hujhADD
+        int64        amount;                    //免费资源控制数量 
+        int64        valid_date;                //产品生效日期
+        int64        expire_date;               //产品失效日期      
+        int64        group_id;                  //集团编号   hujiahua20120306ADD
+        int64        serv_id;                   //用户编号   dengpy20120515ADD
+	}
+	    list vector<SGroupSpecShare> SGroupSpecShareList;
+	    
+	    //////////////////////////////////////////////
+	//原则：
+	//1.计费号码漫游国家组
+	//2.计费号码漫游运营商组字段
+	//////////////////////////////////////////////
+    struct SCountryGroup
+    {
+        int32 COUNTRY_GROUP_ID;
+    }
+        list vector<SCountryGroup> SCountryGroupList;
+        
+    struct SOperatorGroup
+    {
+        int32 OPERATOR_GROUP_ID;
+    }
+        list vector<SOperatorGroup> SOperatorGroupList;
+        
+        
+    //免费资源查询   wangch20120717ADD
+    struct SFreeResQuery
+    {
+         int32 query_type; // 查询方式, 0：SERV_ID; 1：USER_NUMBER; 2：IMSI; 3:GROUP_ID; 4:acct_id(目前不支持);
+         int64 query_id;   // 查询ID, 如果查询方式是0,则是SERV_ID; 如果查询方式是3,则是GROUP_ID; 其他暂不支持        
+    }
+
+    //初始余额阀值定义 wangjing20120924ADD
+    struct SInitThreshold
+    {
+        int64 threshold; //阀值
+        int32 measure_id; //度量
+    }
+
+
+	
+	////////////////////////////////////////////////////
+	//总话单公用字段定义
+	//原则：
+	//1.各分话单值均相同。
+	//2.各业务特有网元字段。XXXSpecInfo体现
+	////////////////////////////////////////////////////
+	struct SCommon
+	{
+		//计费不关心字段	
+		string<10>   COMPANY_CODE;              //公司代码	  lujw20111031ADD
+		int64	     FILE_CREATE_DATE;			//文件创建时间
+		int64        CREATE_TIME;               //话单创建时间   20111024liuhj(billing)ADD
+		int64	     SEQUENCE_NO;				//话单序列号
+		string<1024> SESSION_ID;				//会话代码
+		string<1024> REFUND_SESSION_ID;         //需要退款话单session_id
+		string<64>	 ORIGINAL_FILE;			    //源文件
+		int32	     STOP_CAUSE;				//终止原因
+		string<16>	 CHAEGEUP_SEQ;			    //变更序列号		char	16
+		int32	     SEND_PRIORITY;				//MM发送优先级		int32
+		string<16>	 CHANNEL_ID;				//频道编码		    char	16
+		int64	     STOP_TIME;					//结束时间
+		int32	     MESSAGE_SIZE;				//消息长度		    int32	
+		int32	     SEND_STATE;				//MM发送状态		int32
+		int32        FINAL_STATE;               //结束状态 	
+		string<16>   ADDITIONAL_INFO;           //AIS外部系统所需的额外信息    niuhg20120319ADD
+		
+		//计费相关字段
+		int64	           SERVICE_ID;			    //服务标识
+		int64	           DR_TYPE;					//话单类型
+		int32	           DEVICE_TYPE;				//设备类型
+		int32              ROAMING_OPERATOR_ID;     //国际漫出运营商编码
+		string<16>         ROAMING_OPERATOR_CODE;   //用户当前使用运营商国际通用编码
+		SOperatorGroupList ROAMING_OPERATOR_GROUP;  //计费号码漫游运营商组 lujw20110926ADD    
+		string<32>         ROAMING_OPERATOR_NET;    //国际漫出运营商网络
+		int32              ROAMING_COUNTRY_ID;      //计费号码漫游地国家码 lujw20110926ADD
+        SCountryGroupList  ROAMING_COUNTRY_GROUP;   //计费号码漫游国家组 lujw20110926ADD
+		int32		       MNS_TYPE;				//接入网络类型2g/3g
+		string<20>	       IMEI;					//电子序列号		
+		SOriChargeList	   ORI_CHARGE;			    //原始费用	
+		SOriChargeList     BAK_ORI_CHARGE;          //备份原始话单中的原始费用   dengpy20111017ADD
+		string<64>         ORI_USER_NUMBER;         //原始计费号码
+		string<64>	       USER_NUMBER;				//用户号码
+		string<64>         CONNECT_CALLED_NUMBER;   //SCP用于继续呼叫的号码，透传给计费系统记录话单 pikongxuan20111213ADD 
+		string<64>         CONSUME_USER_NUMBER;     //实际使用业务的号码备份
+		int32              ACTION_TYPE;             //VOICE MAIL前转控制标识  0：不前转；1：前转; 缺省为0
+		string<15>	       IMSI;					//IMSI	
+		string<15>         ORI_IMSI;                //原始IMSI   wangjing20120610ADD	
+		string<64>         BAK_REGUIDE_USER_NUMBER; //Re-guide Usage是被代付用户号码 
+		SFreeResQuery      FREERES_QUERY;           //免费资源查询   wangch20120717ADD
+		int64              CDR_RECEIVE_TIME;        //迟到话单接收时间   zhubo20120808ADD
+		
+		//分析用户特殊号码订购后，将分析出来的号码类型传递给批价，批价根据这两字段来计算费率
+		int32 NUMBER_CLASS;                         //号码大类
+		int32 NUMBER_SUBCLASS;                      //号码子类
+		//int32 OPERATOR_FLAG;                      //操作结果
+		//int32 ACTION_CODE;                        //返回给网元的错误码
+		
+		//预留字段
+		string<16>	OTHER_INFO1;			    //其他信息1		char	16
+		string<16>	OTHER_INFO2;			    //其他信息2		char	16
+		string<16>	OTHER_INFO3;			    //其他信息3		char	16
+		string<16>	OTHER_INFO4;			    //其他信息4		char	16
+		string<16>	OTHER_INFO5;			    //其他信息5		char	16
+		StringMap   RESERVE_FIELDS;             //预留字段    wangjing20120719ADD (仅计费使用)
+		
+		//由网元分析得到数据
+		string<7>	VPLMN1;			            //一级漫游局
+		string<7>	VPLMN2;			            //二级漫游局
+		string<7>	VPLMN3;			            //地市漫游地
+		int16		VISIT_COUNTY_CODE;			//拜访地县市代码
+		int16   	IDD_TYPE;		            //国际字冠类型
+		int16       CAMEL_FLAG;                 //CAMEL标志 
+		int16       FLH_FLAG;                   //feel like home 标志   
+        int16       CONTINUE_FLAG;              //是否需要在线计费的标识：0:正常处理; 1:不进行批价处理，直接接续 pengft20120111ADD  lujw220120427modify the notes  
+		int16       USER_OPERATOR_ID;           //计费用户归属运营商ID
+		int16       OPP_OPERATOR_ID;            //对端用户归属运营商ID 
+		int32       NUMBER_IDENTITY_ATTR;       //标识号码的相关属性
+
+		string<7>   OPP_HPLMN1;                 //对端归属国家
+        string<7>   OPP_HPLMN2;                 //对端归属省
+        string<7>   OPP_HPLMN3;                 //对端归属地区
+        string<7>   OPP_VPLMN1;                 //对端拜访国家
+        string<7>   OPP_VPLMN2;                 //对端拜访省
+        string<7>   OPP_VPLMN3;                 //对端拜访地区
+		
+		//DCC协议中需要返回给网元的信息
+	    string<256> ORIGIN_HOST;
+        string<256> ORIGIN_REALM;
+        string<256> DESTINATION_REALM;
+        int32       AUTH_APPLICATION_ID;
+        string<256> DESTINATION_HOST;
+        string<256> USER_NAME;
+        int32       ORIGIN_STATE_ID;
+        string<256> PRODUCT_NAME;
+        string<64>  HOST_IP_ADDRESS;
+        int32       VENDOR_ID1;        
+		
+		//各业务特有网元字段。
+		SGsmSpecInfo	GSM_SPEC_INFO;			//语音业务分话单值相同字段
+		SGprsSpecInfo	GPRS_SPEC_INFO;
+		SSmsSpecInfo	SMS_SPEC_INFO;
+		SMmsSpecInfo	MMS_SPEC_INFO;
+		SIsmpSpecInfo	ISMP_SPEC_INFO;
+		SGsSpecInfo		GS_SPEC_INFO;	        
+        int32           U_SEPARATE_FLAG;        //U包拆分标识,用于标识未拆包、UT包、UU包 quizq20111004ADD
+        int32           HANDSET;                //手机类型 huangyl20111011ADD         
+        int32           SWITCH_FLAG;            //费率切换生成T包的标识
+                                                //枚举定义 0:普通SESSION-T包; 1:费率切换前前置生成SESSION-T包; 2:费率切换后前置生成SESSION-T包;  qiuzq20111102ADD
+        int64           SWITCH_TIME;            //费率切换时间点   qiuzq20111102ADD    
+        int16           COMMERCIAL_STATUS;      //当前运营商国际漫游业务的商用状态    pengfengtao20111219Modified
+        string<32>      FLOW_ID;                //流程标识   zhangyh20120306ADD
+        int32           DEDUCT_ACCT_FLAG;       //网元传送过来的账户类型，枚举值：0:prepaid 1: postpaid   zhubo20120627ADD
+        SInitThreshold  INIT_THRESHOLD;         //初始余额阀值定义  wangjing20120924ADD
+        
+        //上海版本专用字段 
+        string<32>    SEQUENCE_ID;              //话单序列号
+        int16         CONFIRM_TAG;              //确认标识，0: 默认, 1:扣费提醒发送记录, 2:回复记录（不接收计费）,3:回复记录（接收计费）zhangqd20120719ADD
+        string<16>    DR_TYPE_DESC;             //用来作为标识业务类型描述信息,如dr_gsm,dr_sms    zhangqd20120719ADD
+        int64         CONTROL_TAG_FOR_MODULE;   //系统模块控制标识字段，用来作为每个模块是否做流转处理使用 zhangqd20120907ADD
+
+	}
+	
+	 struct STapCamelInvoFee       // TAP_CAMEL_INVO_FEE CAMEL使用费
+		{
+ 		    int64 fee;
+		    int32 measure_id;
+		} 
+	 struct STapCamelVatAmt       // TAP_CAMEL_VAT_AMT CAMEL税费
+		{
+ 		   int64 fee;
+ 		   int32 measure_id;
+		}
+	
+	//业务分析提醒信息     wangjing20111109ADD
+    struct SAnalyseAlarm
+    {
+        int32       alarm_id;        //提醒编码   wangjing20111121ADD
+        int32       alarm_code;      //提醒码,来自SYS_ALARM_CHANNEL.ALARM_CODE
+        string<128> alarm_info;      //提醒内容
+        string<128> url_address;     //前转url,来自SYS_ALARM_CHANNEL.URL_ADDRESS
+    }
+        list vector<SAnalyseAlarm> SAnalyseAlarmList; 
+     
+    //用于存放服务标识（ServiceId）所对应的使用状态和服务网龄   chengl20111130ADD
+    struct SServiceInfo
+    {
+        int32       age;       //服务网龄
+        int32       used_flag; //服务使用标志 0：未使用 1：已使用
+    }
+        map aimap<int32,SServiceInfo>  SServiceInfoMap;  //key: ServiceId   value: SServiceInfoMap      
+        
+        
+    //! RATE_PROD_PRICE_PLAN     zhourh20120104ADD
+    //! 描述产品的定价计划。
+    //! {产品编号,定价计划ID,产品状态，定价参数[Key1=VALUE1]...}{}...
+    struct SRateProdPricePlan
+    {
+        int64 done_code;              //产品实例化ID
+        int32 price_plan_id;          //定价计划ID
+        int32 offer_sts;              //产品状态
+        SPromParamMap prom_param_map; //定价计划参数
+    }
+        list vector<SRateProdPricePlan> SRateProdPricePlanList;
+        
+    //! 根据累计量设置预后付属性、以及冲销方式。zhourh20120109ADD
+    struct SHybirdRuleDefine
+    {
+        int64 done_code;            //! 产品编号
+        int32 hybrid_rule_type;     //! rule枚举值：1、2、3
+        int32 hybrid_rule_id;       //! HYBRID_*规则ID
+        int64 threshold;            //! 门限值
+        int32 monitor_cdr;          //! 预后属性
+        int32 SEG_ID;               //时段ID caiwei20120610ADD
+    }
+    
+    
+    //描述用户所加入的那些群。   chenlong20120305ADD
+    struct SUserGroupInfo
+    {
+        int64 group_id;    //群编号
+        int64 pay_acct_id; //支付CA
+        int64 SERV_ID;     //户主用户编号  caiwei20120717ADD
+        int32 role_id;     //用户角色
+    }
+ 
+        map aimap<int64,SUserGroupInfo> SUserGroupInfoMap; 
+        //key:group_Id value:SUserGroupInfo结构
+     
+     //Max time period product规格特征属性值  chenlong20120307ADD   
+    struct SMaxTimeProd
+    {          
+        int32 valid_flag;         //生效标志
+        int32 seg_id;             //时段标识
+        int32 reject_threshold;  //需要中断的阀值
+        int32 accumulate_time;    //用户实际在maxTime时段中的拨打时间
+    }
+        map aimap<string,SMaxTimeProd> SMaxTimeProdMap;
+        
+        map aimap<int64,int32> ErrorMap; //xuliang20120321ADD
+        
+    //业务分析已经告警过的提醒ID结构   huangyl20120321ADD
+        map aimap<int32,int32> AlarmIdMap;
+
+    //业务分析状态信息,需要前置机返回到业务分析。huangyl20120321ADD
+    struct SAnalyseStateInfo
+    {
+       AlarmIdMap alarm_id_map; //业务分析提醒列表，不允许有重复提醒。huangyl20120321ADD
+    }
+    
+    //记录对于当前话单来说，最近产品资料变动的时间点列表   huangyl20120416ADD
+    struct SNearestInfoChange
+    {
+       int32  offer_prod_id;     //产品订购定义中销售品编号
+       int64  done_code;         //产品订购定义中产品订购唯一实例
+       int32  change_type;       //变动时间点类型
+       int64  change_date_time;  //变动时间值
+    }
+       map aimap<int32,SNearestInfoChange> SNearestInfoChangeMap;  //key 为：change_type
+      
+    //描述反算鉴权流程的提醒规则,lowBalance,lastMinuteCall,BarService触发提醒规则列表。 qijf20120515ADD   
+    struct SRejectCallAlarm 
+    { 
+       int32 alarm_rule_id;     //提醒规则
+       int64 done_code;         //产品编号 
+       int64 valid_date_time;   //产品生效日期
+       int64 expire_date_time;  //产品失效日期
+    }
+       //! 其中int32为 alarm_class  
+       map aimap<int32,SRejectCallAlarm> SRejectCallAlarmMap;       
+
+    //网元送最大时间片/流量片 caiwei20120610ADD
+    struct SRsu
+    {
+        int32 measure_id;     //(资源型)度量定义    
+        int64 amount_res;     //资源量
+    }
+        list vector<SRsu> SRsuList;
+     
+     // （一条话单）最少计费规则 caiwei20120610ADD  
+    struct SMinimalValue
+    {
+        int32 measure_id;     //(资源型)度量定义    
+        int64 amount_res;     //资源量         
+    }
+        list vector<SMinimalValue> SMinimalValueList;
+     
+    //忙闲时标识，并附带忙闲时时段定义ID。  caiwei20120627ADD    
+    struct SOffPeak
+    {
+        int16 OFF_PEAK_FLAG;//忙闲时标识
+        int32 SEG_ID;       //忙闲时时段定义ID
+    }
+    
+    //用于存放合并后的忙闲时，时长增量，流量增量，费用信息。每个分话单里的相关信息作为list的一个元素存放。
+    //该字段无需入库，仅查询合并时使用。SI需从这个字段里面获取查询后的忙闲时，时长，流量，费用的关联关系。tusj20120904ADD
+    struct SOffPeakCharge
+    {
+        SOffPeak    time_segment;  //忙闲时标识，并附带忙闲时时段定义ID
+        int64       time_addup;    //时长增量  
+        int64       volume_addup;  //流量增量  
+        SChargeList charge;        //费用信息
+    };
+        list vector<SOffPeakCharge> SOffPeakChargeList;    
+    
+    //描述产品上的配额规则，用于计费方式的确认。caiwei20120717ADD
+    struct SRateProdQuotaRes
+    {
+        int64 DONE_CODE;    //产品编号    
+        int32 QUOTA_RES;    //配额规则
+    }
+        list vector<SRateProdQuotaRes> SRateProdQuotaResList;
+        
+    //免费资源增容  caiwei20120808ADD
+    struct SFreebiePromote
+    {        
+        int32 NUMERATOR;          //扩容比例分子
+        int32 DENOMINATOR;        //扩容比例分母
+        int64 PRODUCT_ID;         //增容产品编号 
+    }
+        map aimap<int64,SFreebiePromote> SFreebiePromoteMap;  //key:免费资源科目ID
+	
+	//边漫信息，用于边漫最优处理 zhangqd20120830ADD
+	struct SBorderRoamInfo
+	{
+	   int16          	ROAM_TYPE;      	//漫游类型
+	   int16        	TOLL_TYPE;        	//长话类型
+	   int32        	CONDITION_ID;       //CONDITION_ID
+	   string<7>   		VPLMN1;							//一级漫游局 add 20130829
+	   string<7>   		VPLMN2;             //二级漫游局
+	   string<7>       	OPP_HPLMN2;         //对端归属省(极少数话单存在)
+	   string<7>      	OPP_VPLMN2;         //对端拜访省
+	   SRateProdIdMap 	RATE_PROD_ID;		//产品信息
+	}
+	map aimap<string,SBorderRoamInfo> SBorderRoamInfoMap;  //Key:VPLMN2
+    	
+	////////////////////////////////////////////////////
+	//子话单公用字段定义
+	//原则：
+	//1.各分话单字段值可能不同
+	//2.各业务都有字段。
+	////////////////////////////////////////////////////
+	struct	SSubCommon
+	{        
+		//网元前置计费相关数据
+		int32	          NOTIFY_TYPE;				     //前置机消息类型
+		int32	          PROCESS_TYPE;				     //包类型·I包：插入包·U包：更新包·T包：结束包
+		int32	          TREAT_FLAG;				     //话单标识，正常话单，错误话单。
+		int32             U_FLAG;                        //标识U包是T'包还是U'包		
+		int32             U_COUNT;                       //用来标识该U包是第几个U包  huangyd20111025ADD
+        string<32>	      XDR_OUT_POSTFIX;			     //话单后缀.
+        SRsuList          RSU;                           //网元送最大时间片/流量片 caiwei20120610ADD
+        int32             PRIORITY_LEVEL;                //Qos的优先级    zhubo20120717ADD
+        int32             QOS_CLASS_ID;                  //QoS的类别      zhubo20120717ADD
+        string<32>        PAYMENT_TYPE;                  //付费类型       zhubo20120717ADD
+        string<32>        PAYMENT_MODE;                  //付费模式       zhubo20120717ADD
+        int64             PRODUCT_VALUE;                 //产品价格       zhubo20120717ADD
+		int32			  QUERY_ACCOUNT_TYPE;			 //查询类型		  zhubo20120830ADD
+		
+		//多RG相关
+//		SRgChargeInfo	  RG_CHARGE_INFO;		         //RG信息
+		string<20>	      LAC_ID;					     //定位地点识别   linbc20120222MODIFY
+		string<20>        OPP_LAC_ID;                    //对端定位地点识别  linbc20111108ADD   linbc20120222MODIFY
+		string<20>	      CELL_ID;					     //基站代码  linbc20120222MODIFY
+		string<20>        OPP_CELL_ID;                   //对端号码的基站信息  linbc20120222MODIFY
+				
+		//b
+		int64             SESSION_START_TIME;            //话单通话起始时间        linbc20111114ADD
+		int64	          START_TIME;				     //通话起始时间
+		int64             VISIT_START_TIME;              //漫游地通话起始时间
+		int64	          UPDATE_TIME;				     //子业务更新时间
+		SOffPeak          TIME_SEGMENT;                  //忙闲时标识，并附带忙闲时时段定义ID。   wangjing20120627ADD
+		string<1024>      SERVICE_CODE;				     //移动附加服务代码
+		int32	          CHARGE_FLAG;				     //是否计费的标识
+		int32	          CC_REQUEST_NUMBER;			 //更新次数
+		SOffPeakChargeList OFF_PEAK_INFO;                //用于存放合并后的忙闲时，时长增量，流量增量，费用信息 tusj20120904ADD
+		
+		//e
+		int16             TIME_ZONE;                     //运营商时区
+		int64             SERVICE_KEY;				     //业务键
+		int64	          TIME_ADDUP;				     //时长增量
+		int64	          TIME_ADDUP_SWITCH;			 //费率切换后时间增量
+		int64	          VOLUME_ADDUP;				     //流量增量
+		int64	          VOLUME_ADDUP_SWITCH;		     //费率切换前流量增量     qiuzhq20111102ADD
+		int64	          DURATION;					     //时长总量
+		int64	          OCTECT;					     //流量总量
+		int64             UP_VOLUME;                     //费率切换前上行流量增量  pikongxuan20111213ADD
+        int64             UP_VOLUME_SWITCH;              //费率切换后上行流量增量  pikongxuan20111213ADD
+        int64             DOWN_VOLUME;                   //费率切换前下行流量增量  pikongxuan20111213ADD
+        int64             DOWN_VOLUME_SWITCH;            //费率切换后下行流量增量  pikongxuan20111213ADD
+		string<64>	      OPP_NUMBER;				     //对端号码
+		string<64>	      ORI_OPP_NUMBER;	             //原始对端号码	
+		string<64>        DIALED_NUMBER;                 //原始拨打号码   wangjing20120717ADD	
+		int16             USER_NATURE;                   //计费号码标志
+        int16             OPP_NATURE;                    //对端号码标志
+        int16             A_NATURE;                      //呼转时A号码标志
+		string<1024>      SERVICE_TYPE;			         //移动增值服务类型
+	    int32	          MESSAGE_TYPE;				     //消息类型	
+		string<32>	      BUSINESS_CODE;		         //业务代码		char	32
+		int32             BUSINESS_CODE_GROUP;           //BUSINESS_CODE分组    linbc20111227ADD
+		string<16>	      CONTENT_CODE;			         //内容码		char	16
+		int32	          POINT_COST;				     //点值		int32	
+		int32	          BILL_FLAG;					 //用户计费类别
+		string<20>	      SMSC_ID;					     //短信中心		lujw20111017modified
+		int32	          DEDUCTION_FLAG;			     //扣款标志       yuwei20111122ADD enum
+		int32	          RECORD_TYPE;			         //记录类型	20110622				
+		int32	          STD_ERR_CODE;	                 //重处理负话单标识
+		int32             REDO_FLAG;                     //重批标志   zhanghaotang20120131ADD  jiangyt20120924modify
+		
+		//存放CAMEL业务信息lujw20110928ADD
+		string<64>        CAMEL_DEST_NUM;                //CAMEL 被叫号码
+		int16             CAMEL_SERVICE_LEVEL;           //CAMEL服务级别
+		int32             CAMEL_SERVICE_KEY;             //CAMEL Service Key
+		int16             DFT_CALL_HANDLING_IND;         //Default call handling indicator
+		STapCamelInvoFee  TAP_CAMEL_INVO_FEE;            //CAMEL使用费
+		STapCamelVatAmt   TAP_CAMEL_VAT_AMT;             //CAMEL税费
+		int16             CDR_CAMEL_FLAG;                //话单是否是camel的标记：1:是 0：不是    lujw20111017ADD
+		
+		//预处理输出
+//		int32	          APP_TYPE;				         //计费方式.时长、流量、条
+		int32	          RATING_FLAG;			         //批价标志
+		int32             optimal_charge_flag;           //（标批）与原始费用折优指示  hujiahua20120405ADD
+		int32             ORI_RATING_FLAG;               //原始批价标识    dengpy20111017ADD
+		int16             FREE_CHARGE_TYPE;              //国际漫游费用免费的原因类型　lujw20111004ADD
+		int32             AUTH_TYPE;				     // AUTH_TYPE	
+		int32             RATE_STRATEGY;                 //描述批价模式 caiwei20111128ADD
+		int32             RATE_BUDGET_RES;		         // RATE_BUDGET_RES	
+		int32             BLACK_LIST_ALERT;		         // BLACK_LIST_ALERT	
+		int32             CONDITION_ID;			         // CONDITION_ID
+		int64	          PRODUCT_ID;			         //主产品代码
+		int16	          BILL_INDICATE;			     //指定计费方		
+		SApartOppNumber	  APART_OPP_NUMBER;	             //分解后的对端号码。
+		//int16           MNP_FLAG;                      //对端号码为MNP标志 
+		//int16           FPH_FLAG;                      //被叫付费标志
+//		string<30>	      ACCESS_NUMBER;		         //特殊接入码	20110622
+		int16	          ROAM_TYPE;					 //漫游类型
+		int32	          ACCESS_TYPE;		    	     //特殊接入类型
+		int16	          SP_RELA_TYPE;				     //运营商关系类型
+		int32	          OPP_CONDITION_ID;			     //对端条件代码		
+		int32	          CDR_ONLINE_FLAG;		         //离线在线话单标识
+		string<8>	      BACKUP_DATE;	                 //备份日期
+		int16	          CDR_DEAL_FLAG;			     //话单处理标识
+		int16	          USER_PROPERTY;			     //计费用户属性
+		int16	          OPP_PROPERTY;				     //对端用户属性
+		string<20>	      SP_CODE;			             //SP代码
+		int32             GROUP_TYPE;		             //群组类型
+		int16             NETCALL_FLAG;                  //NETCALL标志		
+		int32	          OPP_NUMBER_TYPE;			     //对端号码类型.语音、短信、彩信等对端类型
+		int32             OPP_COUNTRY_ID;                //对端归属国家ID wangjing20120627ADD
+		SCountryGroupList OPP_COUNTRY_GROUP;             //对端国家分组 lujw20100926edit		
+	  	
+		//用户资料
+		SUserInfoBase		     USER_BASE_INFO;		      //用户基本信息			
+		SRateProdIdMap           rate_prod_id;                // RATE_PROD_ID
+		SRateProdId              OPP_RATE_MAIN_PROD_ID;       // 对端主产品基本信息  chenlong20120222ADD
+		SRateProdBillCycleMap    rate_prod_bill_cycle;        // RATE_PROD_BILL_CYCLE 产品计费周期
+		SRateProdQuotaResList    RATE_PROD_QUOTA_RES;         //描述产品上的配额规则，用于计费方式的确认。caiwei20120717ADD
+		int32                    SYS_QUOTA_RES;               //描述系统级别的配额规则。caiwei20120717ADD
+		SRatingResList           rating_res;                  // RATING_RES
+		SRateProdZoneMap         rate_prod_zone;              // RATE_PROD_ZONE	  
+		int32                    rate_prod_zone_alert_flag;   //小区提醒策略标志位 qijf20120406ADD
+		STaxRuleList             tax_rule;                    // TAX_RULE		
+		SAccumulateRuleMap       accumulate_rule;             // ACCUMULATE_RULE	
+		SPropertyValMinListMap   property_val_min;            // PROPERTY_VAL_MIN
+		SRejectCallAlarmMap      REJECT_CALL_ALARM_MAP;       //描述反算鉴权流程的提醒规则 qijf20120515ADD
+		SAccumulateAlarmList     accumulate_alarm_list;       // 累计提醒规则列表   wangchh20111214ADD
+		int32                    AFTER_MAKE_CALL_ALARM_RULE;  //描述通话后提醒的提醒规则  gongw20111114ADD
+        int32                    BEFORE_MAKE_CALL_ALARM_RULE; //描述通话前提醒的提醒规则  gongw20111114ADD
+		SGroupAcctPaymentList    group_acct_payment;          // GROUP_ACCT_PAYMENT
+		SGroupFreebiePaymentList group_freebie_payment;       // GROUP_FREEBIE_PAYMENT
+		SGroupBudgetList         CAP_MAX;                     // CAP_MAX
+		SGroupBudgetList         group_budget;                // GROUP_BUDGET		
+		Int32List                group_relation_type;         //用于存放当前用户所订购的群产品中存在的群关系和群类型  chenlong20111031ADD
+		SGroupSpecShareList      GROUP_SPEC_SHARE;           //群个性化共享产品
+		int64                    PRODUCT_EXPIRE_DATE;        //产品失效时间点字段 huangyl20110927ADD		
+		int64                    PRODUCT_REDIRECTION_DATE;   //产品失效时间的URL转向时间点	20111129chenglADD
+		Int32List                cell_code;                  //当前计费用户所在小区的小区编号   chengl20111109ADD
+        Int32List                opp_cell_code;              //当前对端用户所在小区的小区编号   chengl20111109ADD
+        SRateProdPricePlanList   RATE_PROD_PRICE_PLAN;       //计费科目类型  zhourh20120104Add
+        SHybirdRuleDefine        HYBRID_RULE_DEF;            //!描述本条话单的预后付属性，以及冲销方式。zhourh20120109ADD   zhourh20120228modify the data type
+        SServiceInfoMap          service_info_map;           //用于存放服务标识（ServiceId）所对应的使用状态和服务网龄  chengl20111130ADD   
+        SUserGroupInfoMap        user_group;                 //用户群   chenlong20120305ADD
+        SMaxTimeProdMap          max_time_prom_spec_map;     //Max time period product规格特征属性值  chenlong20120307ADD
+        int32                    PROCESS_FLAG;               //仅标批的标志位（仅标批/全流程），枚举值如下: 0：全流程处理; 1：仅标批   zhourh20120319ADD
+        SMinimalValueList        MINIMAL_VALUE;              //（一条话单）最少计费规则 caiwei20120610ADD
+        int32                    FIRST_UPDATE_FLAG;          //第一个U包标识   wangjing20120610ADD
+        SFreebiePromoteMap       FREEBIE_PROMOTED_RULE;      //免费资源增容    caiwei20120808ADD
+		SBorderRoamInfoMap		 BORDER_ROAM_INFO_MAP;		 //边漫信息  zhangqd20120830ADD
+		int16					 BORDER_ROAM_TYPE;			 //边漫标识 默认为0：非边漫， 其他：边漫  zhangqd20120830ADD
+        
+//		//批价代码参考字段
+//		SInBusinessAnalyseXdr	ANALYSE_OUT_INFO;
+		
+		//这部分是批价完成后的输出给前置机的数据(使用方式: I包、U-U包输出更新)
+		SOutRatingFecXdr	OUT_RATING_FEC;
+		
+		//批价需要前置机保存数据(使用方式: I包、U-U包输出更新;U-T包、T包访问使用)
+		SInOutFecXdr	    IN_OUT_FEC;
+		
+		//批价需要前置机保存数据(与SInOutFecXdr使用方式相反;U-T包、T包输出更新;I包、U-U包访问使用)hujh20111026ADD
+        SOutInFecXdr        OUT_IN_FEC;
+		
+		//这部分是批价完成后的输出数据(使用方式: U-T包、T包输出更新)
+		SOutRatingXdr	    RATING_OUT;
+		
+		//other
+		string<16>	        ERROR_CODE;				    //错误码
+		string<256>         ERROR_MESSAGE;              //错误信息   20111129linbcADD
+		string<64>          ERR_FILE;                   //错单文件名 20120626jiangyitianADD
+		int16               ERR_MODIFY_FLAG;            //错单更新标志 20120626jiangyitianADD
+		int64               ERR_INPUTTIME;              //错单入库时间 20120626jiangyitianADD
+		string<10>          ERR_FILE_DATE;              //错单文件日期 20120627jiangyitianADD
+		
+		//预留字段
+		string<32>	        RESERVE1;		            //保留字段1
+		string<32>	        RESERVE2;		            //保留字段2
+		string<32>	        RESERVE3;		            //保留字段3
+		string<32>	        RESERVE4;		            //保留字段4
+		StringMap           RESERVE_FIELDS;             //预留字段  wangjing20120719ADD  (仅计费使用)
+		
+		//帐务所需字段
+		int64               BILL_DATE;                  //话单帐期日   20111024liuhj(billing)modified			
+        SRevenueCodeList    REVENUE_CODE_DTL;           //Revenue code映射列表  20111024liuhj(billing)ADD
+        SOutBillingXdr      BILLING_OUT;                //帐务话单的输出数据    20120305liuhj(billing)ADD        	
+			
+		int32               OPERATOR_RELA_TYPE;         //运营商网内外关系0：网外（OFF-NET）1：网内（ON-NET）        
+		string<512>         BATCH_MESSAGE_NUMBER;       //批量消息号码列表			
+		int32               HYBRID_RULE;                //HYBRID规则编号  huangyl20111011ADD
+		SSlaRuleList        sla_rule;                   //SLA_RULE列表     qiuzhq20111012ADD
+        //SSlaRuleListMap     sla_rg_rule;                //RG_RULE列表SDL位置定义    qiuzhq20111012ADD wangch320120831DELETE
+        int64               ORI_DEDUCT_TIME;            //原始扣款话单的通话起始时间   huangyl20111012ADD      
+        int32               RES_COUNT;                  //事件型资源量统计 huangyl20111018ADD  
+        int32               DEDUCT_RES_COUNT;           //事件型实际扣款使用资源量，用于部分refund   wangjing20120627ADD             
+        int32               REFUND_RES_COUNT;           //补款资源量   20120717zhangyhADD
+        SRgRuleList         rg_rule;                    //用于前置机解码和业务之间的GX业务信息交互。保存单个rule的信息。 zhubo20111101ADD        
+        SAnalyseAlarmList   analyse_alarm;              //业务分析发往前置机提醒    wangjing20111109ADD   wangjing20111121Modified                
+        string<64>          table_name;                 //分发的表名   wangwt20111114ADD
+        string<128>         database_name;              //分发后的数据库名  wangwt20111114ADD        
+        int16               LATE_FLAG;                  //迟到标志   Tusj20120718ADD
+        int16               is_filter;                  //判断话单是否过滤的标志   wangwt20111114ADD        
+        string              FCITYPE;                    //FCITYPE             wangyl20111123ADD   
+        int16               TEST_CDR_FLAG;              //测试话单标识   0：表示正常话单；1：表示测试话单    huangyd20111213ADD
+        SSlaRuleList        rg_rule_list;               // rg_rule列表.业务分析将排序好的SLA_RG_RULE填入该列表.   wangchh20120208ADD
+        ErrorMap            history_error_map;          //保存本次通话出现的历史错误信息  xuliang20120321ADD
+        int64               OFFPEAK_SWITCH_DATE;        //系统级或主产品级忙闲时切换时间点  huangyl20120321ADD
+        int64               PRODUCT_VALID_DATE;         //产品生效时间点    huangyl20120321ADD
+        SAnalyseStateInfo   analyse_state_info;         //业务分析状态信息  huangyl20120321ADD
+        SNearestInfoChangeMap    NEAREST_INFO_CHANGE_MAP;   //记录最近产品资料变动的时间点列表   wangyl20120627ADD
+        int32               OUTPUT_FLAG;                //用来描述是否输出话单的控制标志:0：输出话单；1：不输出话单；huangyl20120426ADD
+        int32               CHARGE_ROLLBACK_FLAG;       //0:不回退。1:仅作计费费用回退； wangjing20120627ADD
+        
+    //上海版本专用字段 Begin
+        string<30>    OPP_USER_NUMBER;		      //归整后对端号码
+        string<64>    CALL_REFNUM;		          //呼叫参考号
+        string<8>     PARTIAL_ID;		          //超长话单切割标志 
+        int64         FIRSTCDR_START_TIME;	      //首话单通话起始时间
+        int64         TIME_WINDOW;                //时间窗口
+        int64         OCS_MONITOR_CDR;		      //欠控用户标记 
+        string<24>    SERVICE_KEY_VAL;            //业务键    liufengping20120427ADD
+        int16         CDR_QUERY_FLAG;             //详单查询标识  liufengping20120503ADD     
+        int64         share_gruop_id_for_freebie; //用于免费资源流量共享池需求，上海项目 caiwei20120815ADD
+		int16		  NEW_CDR_FLAG;				  //话单标识,默认为采集话单，0：网元采集话单， 1：计费系统内新生成话单 zhangqd20120831ADD
+    //上海版本专用字段 End
+    
+        int64               BATCH_NO;           //批次号(生成各类话单时，各模块各自填写该字段)  20120717liuhj(billing)ADD	
+				int32               FN_LEVEL;                   //亲情号码级别
+        int32               SN_FLAG;                    //呼叫短号标示  	
+	}
+	
+	
+	       
+	////////////////////////////////////////////////////
+	//子话单定义
+	//原则：SSubCommon+SXXXInfo+extension
+	////////////////////////////////////////////////////
+	struct	SSubXdr
+	{
+		// 所有业务中，除了在STRUCT SCommon中定义了的，只要有业务有交叉的字段信息，就加入到这个字段中
+		// 包括：前置网元信息、解析信息、资料信息、批价信息
+		SSubCommon SUB_COMMON;
+		
+		// 分类业务特定控制字段信息
+		// 包括：不同详单业务的网元特定信息、解析特定信息、资料特定信息、批价特定信息
+		SGsmInfo 	GSM_INFO;
+		SGprsInfo   GPRS_INFO;
+		SMmsInfo 	MMS_INFO;
+		SSmsInfo 	SMS_INFO;
+		SIsmpInfo   ISMP_INFO;
+		SGsInfo 	GS_INFO;
+		StringMap   extension; 
+		int16       SUB_XDR_TYPE; //子话单类型 tusj20120718ADD
+	}
+	map aimap<string, SSubXdr> SSubXdrMap;
+	
+	struct SDccHead
+    {
+        int32 VERSION;
+        int32 COMMAND_FLAG;
+        int32 COMMAND_CODE;
+        int32 APPLICATION_ID;
+        int32 HOP_ID;
+        int32 END_ID; 
+    }
+    
+    //帐务接口用
+    //**********
+    //**********
+    //与前置机的信息
+    
+   // 充值记录查询 查询参数
+	struct SQueryRechargeLog
+	{
+		string etopup_session_id;	// 充值的外部流水 选填
+		string recharge_number;		// 充值的号码 选填
+		int64  start_date;			// 开始时间 yyyymmddHHMMss 必填
+		int64  end_date ;			// 结束时间 yyyymmddHHMMss 必填
+		int32  recharge_partner_id;	// 银行的枚举 选填
+		int16  account_type ;		// 账户类型 0:预付费, 1:后付费,目前只有预付费 选填
+		string card_batch ;			// 卡批次号。 选填
+		string card_serial;			//卡序列号 选填
+		int32  recharge_method;		// TBD  充值方式
+									// 1: VC recharge
+									// 3: manual recharge
+									// 4: ATM recharge
+									// 5: STK recharge 
+									// 6: Tele-banking recharge
+									// 7: Spare
+									
+		int32 service_id;			// TBD 
+									// 0: IVR
+									// 1: USSD
+									// 2: MONEY TOPUP
+									// 3: ATM
+									// 4: Internet Banking
+									// 5: Credit Card
+		StringMap  extra_map;       //备用字段  chenzj20120817ADD
+
+	}
+	    //资金信息
+    struct SAssetInfo
+    {
+        int64   acct_id;	                    //账户编号
+        int64   resource_id;                    //设备编号
+        int32   asset_type;                     //资产类型 0:账本,1信用度,2积分,4免费资源   lindx20120510modify the notes
+        int64   asset_id;                       //资产编号
+        int32   asset_item_id;                  //资产科目编号
+        int64   valid_date;	                    //生效时间
+        int64   expire_date;                    //失效时间
+        int64   amount;                         //资产额度
+        int64   used;                           //已使用量   lindx20120510ADD
+        int64   remain_amount;                  //剩余量 amount - used  , 如果是负余额的话 是0 - used.   lindx20120510ADD
+        int16   status;                         //资产状态
+        int32   measure_id;                     //货币属性
+        int16   is_common_pocket;               //通用账本标识    1, 通用 2 专用账本 ；只对账本有效
+        int16   main_balance_flag;              //主账本标识      1: 主账本 2: 赠送账本  3:负余额账本. 只对账本有效  lindx20120510ADD
+        int16   billing_type;                   //0,预付  1后付 2 融合
+        int64   org_amount;                     //原始额度
+        int64   org_valid_date;                 //原始生效时间
+        int64   org_expire_date;                //原始失效时间
+        int32   group_id;                       //GROUP_ID   susb20120610ADD
+        int64   product_id;                     //产品编号  chenzj20120817ADD
+        int64   offer_id;                       //销售品编号 chenzj20120817ADD
+        int16   freeres_flag;                   //一次性免费资源标示 0.周期性；1.一次性  chenzj20120817ADD
+        int16   object_type;                    //免费资源级别 0.用户级；1.账户级  chenzj20120817ADD
+        int16   shared_freeres;                 //共享免费资源标示 1: 共享免费资源,0,非共享免费资源  chenzj20120817ADD
+        StringMap  extra_map;                   //备用字段  chenzj20120817ADD
+    }
+    list vector<SAssetInfo> SAssetInfoList;
+    
+    //余额查询   linchongwen20120206ADD
+    struct SBalanceInfo
+   {
+   		int32	measure_id;								//货币属性 
+   		SAssetInfoList  asset_info_list;                //资金信息   lindx20120510ADD
+   		StringMap  extra_map;                           //备用字段  chenzj20120817ADD
+   }
+   list vector<SBalanceInfo> SBalanceInfoList;
+   
+   //信用度余额汇总信息  linchongwen20120220ADD
+    struct SCreditInfo 
+    {
+    int16 unlimited;      //信用度无穷大标示,1为无穷大
+    int64 remain_credit;  //信用度余额
+    int32 measure_id;     //货币属性
+    int64 resource_id;    //设备编号  lindx20120510ADD
+    int64 acct_id;        //账户编号  lindx20120510ADD
+    int64 valid_date;     //信用度账本生效期  lindx20120514ADD
+    int64 expire_date;    //信用度账本失效期  lindx20120514ADD
+    StringMap  extra_map; //备用字段  chenzj20120817ADD
+   }
+   list vector<SCreditInfo>  SCreditInfoList;
+   
+   
+   //余额查询结果   linchongwen20120206ADD   linchongwen20120220MODIFY
+   struct SAssetBalance
+		{
+		SBalanceInfoList	balance_info_list; //资金余额汇总信息  针对预付费
+		SCreditInfoList     credit_info_list;  //信用度余额汇总信息 针对后付费 linchongwen20120220ADD
+		}
+
+     //赠送信息
+    struct SRewardInfo
+    {    
+       int32  reward_id;	                    //赠送编号
+       int32  allot_id;	                        //赠送规则编号
+       int64  acct_id;                          //账户编号
+       int64  resource_id;                      //设备编号
+       int64  reward_amount;                    //赠送总额度
+       int32  measure_id;                       //货币属性 lindx20120510ADD
+       int16  billing_type;                     //付费类型
+       int32  product_offering_id;              //销售品编号
+       int32  credit_item_id;                   //资产科目
+       int64  valid_date;                       //生效时间
+       int64  expire_date;                      //失效时间
+       int16  reward_type;                      //赠送类型 , 充值记录查询增加
+												// 0:general reward
+												// 1:reward of payment
+												// 2:reward of topup
+												// 3:accumulative activity
+												// 4:reward of subscription   
+												
+       SAssetInfoList		asset_info_list;    //资产变更记录  
+       StringMap  extra_map;                    //备用字段  chenzj20120817ADD
+    }
+    list vector<SRewardInfo> SRewardInfoList;    
+	
+	/*
+	 * 充值查询失败的error_code 在
+	 * SBusinessInteraction 结构里
+	 */
+	struct SRechargeLog
+	{
+		// 号码和卡信息 
+		string etopup_session_id;	// 充值的外部流水
+		string recharge_number;		// 充值的号码
+		int64  trade_date;			// 充值时间
+		int32  recharge_partner_id;	// 银行的枚举 
+		int32  error_code ;			// 充值失败的错误码，充值成功给0
+		string card_batch ;			// 卡批次号。 
+		string card_serial;			// 卡序列号 
+		int32 card_type ;			// 卡类别
+		int64 card_validity ;		// 卡有效期
+		int32 card_value;			// 卡面值 
+		int32 card_merchant_id;		//  充值卡类型
+									//  1: 1-2-Call scratch card
+									//	2: GSM1800 scratch card
+									//	3: Test scratch card
+									//	4: GSMAdvanced scratch card
+		string card_pin;			// 卡PIN
+		
+		int32 recharge_method;		// TBD  充值方式
+									// 1: VC recharge
+									// 3: manual recharge
+									// 4: ATM recharge
+									// 5: STK recharge 
+									// 6: Tele-banking recharge
+									// 7: Spare
+									
+		int32 service_id;			// TBD 
+									// 0: IVR
+									// 1: USSD
+									// 2: MONEY TOPUP
+									// 3: ATM
+									// 4: Internet Banking
+									// 5: Credit Card
+		
+		// 赠送信息
+		SRewardInfoList reward_list; // 赠送信息
+		
+		// 充值的信息
+		int64 recharge_amount ;		// 实际充值的金额
+		int32 active_day;			// 充值的延长有效期天数
+		int16 account_type;			// 0:预付费1:后付费
+		
+		// 生命周期信息
+		int64 active_period ;		// 充值后的有效期
+		int64 old_active_period ;	// 充值前的有效期
+		int32 validity_add ;		// 有效期延长天数
+		
+		// 预留字段
+		string transparent_data_1;	// 预留
+		string transparent_data_2;	// 预留
+		string transparent_data_3;	// 预留
+		StringMap  extra_map;       //备用字段  chenzj20120817ADD
+	}
+	list vector<SRechargeLog> SRechargeLogList;
+	
+	// 资金免费资源调整
+	struct SAdjustFreeRes 
+	{
+		string phone_id;	        //手机号码;账户编号,用户编号，手机号码三必选一,填手机号码时是对在网用户用户充值   wangyl20120208ADD
+		int16 modify_type;			// 0:append 1:replace default:0 
+		int64 product_id ;			// 产品编号 
+		int64 free_resource_id; 	// 免费资源科目 必填
+		int64 amount ;				// 调整的金额. 加金额为正数 扣减为负数 没有调整额度填0 
+		int32 valididy_amount;		// 免费的有效期 调整的天数 没有调整有效期填0 
+		
+		// 预留字段
+		string transparent_data_1;	// 预留
+		string transparent_data_2;	// 预留
+		string transparent_data_3;	// 预留	
+		StringMap  extra_map;       //备用字段  chenzj20120817ADD	
+	}
+
+	/*
+	 * 充值查询失败的error_code 在
+	 * SBusinessInteraction 结构里
+	 */
+	struct SAdjustFreeResResult
+	{
+		string life_cycle_status; 		// 生命周期状态
+		SAssetInfoList asset_info_list; // 调整的
+		StringMap  extra_map;           //备用字段  chenzj20120817ADD
+	}
+    
+    //余额信息
+    struct SBalance
+  {
+       int64    book_id;               //科目ID
+       int64    book_item;             //科目类型
+       int64    amount;                //费用额度
+       int32    days;                  //有效时间 
+       int64    acct_id;               //账户编号
+       int64    user_id;               //用户编号
+       string   phone_id;              //手机号
+       int64    valid_date;            //生效日期
+       int64    expire_date;           //失效日期
+       StringMap  extra_map;           //备用字段   chenzj20120816ADD
+}
+
+    //首次激活
+    struct SFirstAct
+  {
+       int64    user_id;                          //用户编号
+       string   phone_id;                         //手机号码         必填
+       int64    activation_time;                  //首次激活时间     必填
+       int16    device_type;                      //设备类型
+       int16    sms_lang;                         //短信语言类型
+       int16    ivr_lang;                         //语音通话语言类型
+       int16    ussd_lang;                        //ussd语言类型
+       int16    notify_flag;                      //提醒标识
+       string   location;                         //激活所在位置     必填       
+       SBalance balance;                          //余额信息
+    }
+    
+	//操作信息
+	struct SOperInfo
+  {
+        string        so_nbr;           //工单号
+        int32         busi_code;        //受理类型(not null)       必填
+        int16         so_mode;          //受理模式(not null)       必填 // channel_id
+        int64         so_date;          //受理时间(not null)
+        int16         charge_flag;      //收费标志
+        int16         isnormal;         //正常工单(not null)
+        int64         cust_id;          //客户编号
+        int64         acct_id;          //帐户编号
+        int64         user_id;          //用户编号
+        string        phone_id;         //手机号码
+        int32         op_id;            //操作员工号(not null)
+        int16         prov_code;        //省代码
+        int16         region_code;      //地市代码
+        int16         county_code;      //县市代码(not null)
+        int32         org_id;           //局向组织(not null)
+        string        rso_nbr;          //修改或撤销工单的原工单号
+        int16         is_monitor;       //是否监控用户，新增。0 否；1 是
+        string        remark;           //备注
+  }
+  
+  //充值信息
+    struct SRecharge
+    {
+        int64  acct_id;	                        //帐户编号;账户编号,用户编号，手机号码三必选一
+        int64  resource_id;                     //设备编号; 账户编号,用户编号，手机号码三必选一
+        string phone_id;	                    //手机号码;账户编号,用户编号，手机号码三必选一,填手机号码时是对在网用户充值
+        int64  paid_value;	                    //充值额度，必填
+        int32  measure_id;	                    //货币属性,必填
+        
+        int32  recharge_type;                   //业务类型  0:现金充值  1：银行充值  2：卡充值
+        int16  recharge_flag;		            //充值标识  0: 充值		1：校验用户状态  2：直接返回OK
+        int32  recharge_method;					// TBD  充值方式  1: VC recharge  3: manual recharge 4: ATM recharge 5: STK recharge 6: Tele-banking recharge 7: Spare
+		int32  service_id;						// TBD 0: IVR 1: USSD 2: MONEY TOPUP 3: ATM 4: Internet Banking 5: Credit Card
+        
+        //银行信息
+        string bank_acct_id;                    //银行账户编号
+        int64  bank_id;                         //银行编号
+        string bank_acct_name;                  //账户名
+
+        //充值卡信息
+        int32  extend_days;	                    //有效期延长天数
+        string voucher_card_no;	                //卡号码
+        int16  card_type;	                    //卡类型
+        string card_batch_no;                   //卡的批次号
+        string card_serial_no;	                //卡的序列号
+        
+        
+	    int32  card_value;	                    //卡的面值
+		string card_pin;						//卡PIN
+		int32  card_merchant_id;				//充值卡类型 1: 1-2-Call scratch card 2: GSM1800 scratch card 3: Test scratch card 4: GSMAdvanced scratch card												
+		int64  card_validity ;					//卡有效期 yyyymmddHHMMss
+		
+		// 预留字段
+		string transparent_data_1;	            //预留
+		string transparent_data_2;	            //预留
+		string transparent_data_3;	            //预留
+		StringMap  extra_map;                   //备用字段  chenzj20120817ADD
+
+    }
+        //余额查询
+    struct SQryBalance
+    {
+        string phone_id;	                    //手机号码;账户编号,用户编号，手机号码三必选一,填手机号码时是对在网用户用户充值      
+        int32 cal_fee_flag;                     //余额查询第一次算费标示，0:不查询;1:查询  lindx20120510ADD
+        int32 confirm_flag;                     //查询确认,取消标记 0:取消查询 1:继续查询  lindx20120510ADD
+        StringMap  extra_map;                   //备用字段  chenzj20120817ADD
+    }
+    
+
+
+    
+    //业务记录信息
+    struct SBusinessInteraction
+    {
+        int64         so_bbr;                        //流水号
+        int64         so_date;                       //受理时间
+        int32         error_code;                    //错误编码   （0:成功，其余失败）  wukl20120306modify the notes    
+        string        error_desc;                    //错误编码描述信息
+        string<256>   redirect_url;                  //成功、失败跳转的url地址  wukl20120306ADD
+        StringMap     extra_map;                     //备用字段  chenzj20120817ADD
+    }    
+    
+    //算费费用结果   lindx20120409ADD
+    struct SOtcFee
+    {     
+        int32   fee_item_id;        //费用科目编码
+        int32   amount;             //算费金额          
+        int32   measure_id;         //货币属性    
+        StringMap  extra_map;       //备用字段  chenzj20120817ADD
+    }
+        list vector<SOtcFee> SOtcFeeList;
+        
+   //算费累计量信息  lindx20120409ADD
+    struct SAccumulateLog
+    {
+        int32   item_code;          //累计量科目
+        int16   channel_id;         //渠道ID(有可能存在通用渠道)
+        int32   value;              //本次累计量的值
+        int32   total_free_times;   // 总的免费次数
+        StringMap  extra_map;       //备用字段  chenzj20120817ADD
+    }
+        list vector<SAccumulateLog> SAccumulateLogList;
+    
+    //算费信息   lindx20120409ADD
+    struct SCalFeeConfirm
+    {             
+        SOtcFeeList         s_otc_fee_list;              //算费信息
+        SAccumulateLogList  s_accumulate_log_list;       //累计量信息
+    }
+    
+    //返回信息
+    struct SBusinessInfo
+    {
+        SBusinessInteraction  sbusinessinteraction;     //业务记录信息        
+        SRewardInfoList       list_reward_info;         //本次业务的赠送信息  
+        SAdjustFreeResResult  adjust_free_resresult;    //免费资源调整结果
+        SRechargeLogList      list_recharge_log;        // 充值记录 
+        SAssetBalance		  asset_balance;		    //余额查询结果   linchongwen20120206ADD   linchongwen20120220MODIFY
+        SCalFeeConfirm        cal_fee_confirm;          //算费结果    lindx20120409ADD   
+    }    
+           
+         
+    //用户信息
+    struct SUserInfo
+    {
+        int64  active_period;                   //最近激活时间
+        int64  suspend_period;                  //暂停时间
+        int64  disable_period;                  //disable 时间
+        int32  brand_id;                        //品牌
+        int64  maximun_balance;                 //用户最大余额
+        int32  fraud_lock;                      //欺诈锁 
+        int32  user_life_cycle;                 //用户生命周期    zhubo201111116ADD
+        int32  billing_type;                    //用户类型  zhubo20120509ADD
+        StringMap  extra_map;                   //备用字段  chenzj20120817ADD
+    }
+   
+    //调整余额入参   chenzhiling20120221ADD(billing)
+    struct SAdjustAsset 
+    {
+        string phone_id;                        //必填；手机号码，目前只支持对在网用户进行余额调整
+        int16  modify_type;                     //必填； 0:append 1:replace default:0  
+        int64  asset_item_id;                   //资金科目(可选)，如果不填，就按配置科目，目前认为AIS的main balance科目只有一个)
+        int64  amount;                          //调整的金额. 加金额为正数 扣减为负数 
+        int32  validity_amount;                 //用户有效期调整的天数，没有调整有效期填0 
+        int32  measure_id;                      //货币属性，可以为空，如果为空，则取账户的measure_id
+        int32  deduct_type;                     //必填:0: Deducting all existing free resource/present balance/main balance 
+        //and returns succeeded result code to CRM with amount which has been deducted.(used for balance/free resource/validity)
+                                                // 1: Not deducting free resource/present balance/main balance and returns failed result code(used for balance/free resource/validity)
+                                                // 2: Deduct to negative if not enough (used for deduct balance/validity)
+                                                // Default Value: 1
+    // 预留字段
+        string transparent_data_1;              // 预留
+        string transparent_data_2;              // 预留
+        string transparent_data_3;              // 预留 
+        StringMap  extra_map;                   //备用字段  chenzj20120817ADD
+    }
+
+
+    
+    ////////////////////////////////////////////////////
+	//首次激活、充值、查询等返回的信息。
+	////////////////////////////////////////////////////
+	struct SManagerInfo
+	{
+		SFirstAct	  FIRST_ACTIVATION;           //首次激活
+		SOperInfo     OPER_INFO;                  //操作信息
+		SRecharge     RECHARGE_INFO;              //充值信息
+		SQryBalance	  QUERY_BALANCE;              //余额查询
+		SBusinessInfo BUSINESS_INFO;              //返回信息
+		SUserInfo	  USER_INFO;                  //用户信息
+		SQueryRechargeLog QUERY_RECHARGE_LOG;     //充值记录查寻入参
+        SAdjustFreeRes    ADJUST_FREERES;         //免费资源调整入参
+        SAdjustAsset      ADJUST_ASSET;           //调整余额入参   chenzhiling20120221ADD(billing)
+	}
+	
+	//话单拆分信息
+	struct SSplitInfo
+  {
+    int32 split_type;  // 拆分话单的标识
+    int16 delete_flag; // 删除标识
+    int16 split_index; // 拆包后的次序  yuwei20111129ADD
+  }  
+
+    
+	////////////////////////////////////////////////////
+	//话单定义
+	////////////////////////////////////////////////////	
+	struct SXdr
+	{
+		int32      charge_mode;			// 0：按Session总话单计费；
+									    // 1: 按号码总话单计费
+									    // 2：按分话单计费，遍历分话单sub_xdr_map
+		int16      response_type;       //代应答标识		
+		SDccHead   dcc_head;		
+		string<64> sock_info;           // 与网元连接的描述信息	
+		string<32> FEATURE_CODE;        //话单特征值（由查重产生）	xuliang20120610ADD		
+		
+		//话单拆分信息
+        SSplitInfo split_info;	
+        	
+		// 所有业务相关，并且所有子话单都是相同的业务字段
+		SCommon     common;	
+		
+		//总话单		
+		SSubXdr     total_xdr;	
+			
+		//分话单		
+		SSubXdrMap	sub_xdr_map;
+				
+		//首次激活，充值，余额查询接口		
+		SManagerInfo	MANAGER_INFO;
+		
+		//RGG分话单
+        SSubXdrMap rgg_xdr_map;        
+    
+        int32 FUNCTION_FLAG;        //GPRS接口标识 GX=1 、GY'=2、GY=0    qiuzhq20111012ADD        
+        int32 GX_FLAG;              //GX GY'分析是总话单还是分话单的标识  GX_FLAG=1  分话单; GX_FLAG=0 总话单   qiuzhq20111012ADD        
+        SSubXdrMap  gx_xdr_map;     //前置机送来的GX子话单   qiuzhq20111012ADD
+        string<64> input_file_name; //文件名  wangdeqi20120229ADD     
+        xdr   t_xdr;                //老详单字段集类型 zhangqd(shanghai)20120810ADD
+	}
+	
+	
+	////////////////////////////////////////////////////
+	//话单列表定义
+	////////////////////////////////////////////////////	
+	list vector<SXdr> SXdrList;	//话单列表
+}
+#endif
+
+
+
