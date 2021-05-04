@@ -34,6 +34,28 @@ def getHtml(dest_url):
     else:
         return True
 
+def getMachineInt(strBin):
+    '''
+    补码的反向计算，返回机器码对应的int值，失败返回None
+    '''
+    #数字减1
+    intNum = int(strBin, base=2) - 1
+    # 返回串开头为0b
+    strBin = bin(intNum)[2:]
+    # 取反
+    #reserveStr = reverse(strBin)
+    binary_out = list(strBin)
+    for epoch,i in enumerate(strBin):
+        if i == "0":
+            binary_out[epoch] = "1"
+        else:
+            binary_out[epoch] = "0"
+    reserveStr = "".join(binary_out)
+    resInt = -int(reserveStr,2)
+
+    return resInt
+
+print(getMachineInt("1111001110110111001100110011011100110011011101111011001100101100"))
 #print(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"))
 #
 #a = '01-24~01-30'
@@ -67,5 +89,5 @@ def getHtml(dest_url):
 #print(doc.summary())
 #richxerox.pasteboard.set_contents(html=doc.summary())
 
-url = 'https://www.hackthebox.eu/api/invite/generate'
-getHtml(url)
+#url = 'https://www.hackthebox.eu/api/invite/generate'
+#getHtml(url)

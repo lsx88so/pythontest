@@ -75,7 +75,7 @@ class xdrDefine:
         # }
         self.__xdrDecode = collections.OrderedDict()
         filename = logpath + r"xdrdefine.log" if logpath else None
-        self.__log = Logger(level=loglevel, logmode=logmode, filename=filename, logname='xdrDefine', fmt=r'[%(name)s - %(funcName)s] - %(levelname)s: %(message)s')
+        self.__log = Logger(level=loglevel, logmode=logmode, filename=filename, logname='xdrDefine', fmt=r'[%(name)s - %(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
 
     def setLogLevel(self, loglevel):
         self.__log.setLogLevel(loglevel)

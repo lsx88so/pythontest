@@ -66,14 +66,15 @@ class treeNode:
             memo = {}
         result = self.__class__()
         memo[id(self)] = result
-        result.parent = self.parent
-        result.index = self.index
+        #result.parent = self.parent
+        #result.index = self.index
 
         result.data = copy.deepcopy(self.data)
         for node in self.children:
             result.children.append(copy.deepcopy(node))
-        for i, node in enumerate(result.children):
+        for i, _ in enumerate(result.children):
             result.children[i].parent = result
+            result.children[i].index = i
         return result
 
     def Empty(self):
@@ -84,12 +85,10 @@ class treeNode:
 
     def insertNode(self, dest_node):
         '''插入子节点，成功返回True，输入的节点不能是其它结点的子节点，否则插入失败，返回False'''
-        if dest_node.parent:
-            return False
-        dest_node.parent = self
-        dest_node.index = len(self.children)
-        self.children.append(dest_node)
-        return True
+        if dest_node and not dest_node.parent:
+            dest_node.parent = self
+            dest_node.index = len(self.children)
+            self.children.append(dest_node)
     
     #def insertNodeList(self, dest_node_list):
     #    '''插入子节点列表，输入的节点不能是其它结点的子节点'''
@@ -103,26 +102,32 @@ class treeNode:
     
     def moveNode(self, dest_node):
         '''变更其它结点的子节点到本结点下，若无父结点，则直接插入'''
-        if dest_node.parent:
-            dest_node.parent.removeNode(dest_node)
-        dest_node.parent = self
-        dest_node.index = len(self.children)
-        self.children.append(dest_node)
+        if dest_node:
+            if dest_node.parent:
+                dest_node.parent.removeNode(dest_node)
+            dest_node.parent = self
+            dest_node.index = len(self.children)
+            self.children.append(dest_node)
 
     def removeNode(self, dest_node):
         '''删除一个子节点'''
-        for i, node in enumerate(self.children):
-            if self.children[i].tag == dest_node.tag:
-                del self.children[i]
-                break
-        for j in range(i, len(self.children)):
-            self.children[j].index = j
+        if dest_node:
+            delFlag = False
+            for i, node in enumerate(self.children):
+                if self.children[i].tag == dest_node.tag:
+                    del self.children[i]
+                    delFlag = True
+                    break
+            if delFlag:
+                for j in range(i, len(self.children)):
+                    self.children[j].index = j
 
     def removeNodeByIndex(self, node_index):
         '''通过子节点索引，删除子节点'''
-        del self.children[node_index]
-        for j in range(node_index, len(self.children)):
-            self.children[j].index = j
+        if node_index < len(self.children):
+            del self.children[node_index]
+            for j in range(node_index, len(self.children)):
+                self.children[j].index = j
 
     def removeAllNodes(self):
         '''清空该结点的所有子节点'''
@@ -141,7 +146,18 @@ class treeNode:
         if self.parent:
             return '%s %s' % (self.parent.path.strip(), self.tag)
         return self.tag
-
+    
+    def search(self, tag):
+        if self.tag == tag:
+            return self
+        for i, n in enumerate(self.children):
+            if n.tag == tag:
+                return self.children[i]
+            ret = self.search(self.children[i])
+            if ret:
+                return ret
+        return None
+    
     def isExist(self, dest_node):
         '''
         判断给定结点是否在该结点下存在（以结点的Tag值为判断依据）

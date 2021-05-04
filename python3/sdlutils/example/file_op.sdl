@@ -1,0 +1,48 @@
+#ifndef _FILE_OP_H_
+#define _FILE_OP_H_
+
+module MFileOp
+{
+    struct SBinMsgPack
+    {
+        string<10240> msgbuf;
+        int64         ilen;
+        string<64>    orifilename;
+    }
+    
+    list vector<SBinMsgPack> SBinMsgPackList;
+
+	struct SFileOp
+	{
+		string<64> INPUT_FILE_NAME; /* 输入文件名 */
+		string<64> ORIGINAL_FILE;   /* 原始文件名 */
+		string<32> XDR_OUT_POSTFIX; /* 输出后缀名 */
+		int16      OUTPUT_FLAG;     /* 输出标识 0 输出 1 不输出 */
+		int32      TREAT_FLAG;      /* 话单标识，0 正常话单，1 错误话单 */
+		string<16>      ERROR_CODE;      /* 错误代码 Exxxx*/
+	};
+	
+	map aimap<string,int32> Error2CountMap;
+	map aimap<string,int32> Filter2CountMap;
+	map aimap<string,int32> File2CountMap;
+	
+	struct SFileOpStatInfo
+	{
+		string<256> uri;
+		string<64> read_file_name;/* 原始话单文件名 */
+		string<32> start_time;/* 处理开始时间 */
+		string<32> end_time;/* 处理结束时间 */
+		int32 read_file_size;/* 读取的文件大小 */
+		int32 read_xdr_count;/* 读取(输入)话单数 */
+		int32 write_ok_xdr_count;/* 正常话单数(输出) */
+		int32 write_fail_xdr_count;/* 错单数(输出) */
+		int32 no_write_count;/* 不落地的话单数 */
+		int32 new_tbcg_count;/* 处理过程产生的新包数(输出) */
+		Error2CountMap error_stat;/* <errorcode,count>,错单分类统计 */
+		Filter2CountMap filter_stat;/* 不落地话单明细 */
+		File2CountMap file_stat;/* 文件名和话单数明细 */
+		int32 speed;/* 速度 */
+	};
+};
+
+#endif

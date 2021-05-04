@@ -67,7 +67,7 @@ def insertSpace(inStr):
     new_text = " ".join(text_list)
     return new_text
 
-def sumTag(cl, pc, tagv):
+def calcTag(cl, pc, tagv):
     #tagClass = {"00": "UNIVERSAL", "01": "APPLICATION", "10": "CONTEXT_SPECIFIC", "11": "PRIVATE"}
     #tagType = {"0": "PRIMITIVE", "1": "CONSTRUCTED"}
     tag = 0
@@ -256,7 +256,7 @@ class asn1Aanlyse:
         self.__fileHeadLen = fileHeadLen
         self.__recordHeadLen = recordHeadLen
         filename = logpath + r"asn1analyse.log" if logpath else None
-        self.__log = Logger(level=loglevel, logmode=logmode, filename=filename, logname='asn1Aanalyse', fmt=r'[%(name)s - %(funcName)s] - %(levelname)s: %(message)s')
+        self.__log = Logger(level=loglevel, logmode=logmode, filename=filename, logname='asn1Aanalyse', fmt=r'[%(name)s - %(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
 
     def setLogLevel(self, loglevel):
         self.__log.setLogLevel(loglevel)
@@ -334,7 +334,7 @@ class asn1Aanlyse:
         return None, None, None
 
     def __analyseOneTag(self, inBytes, startPos=0, fileOffset=True, recordOffset=True):
-        self.__log.logger.debug("------asn1 in------")
+        self.__log.logger.debug("------asn1 one tag in------")
         currPos = startPos
         recordHeadPos = currPos
         if fileOffset:
@@ -460,7 +460,7 @@ class asn1Aanlyse:
                     currByte = inBytes[nextPos]
                     nextPos = nextPos + 1
                 asn1Node.data.asnLength_v = nextPos - currPos
-        self.__log.logger.debug("------asn1 out------")
+        self.__log.logger.debug("------asn1 one tag out------")
         return nextPos, asn1Node
 
     def anakyseAsn(self):
@@ -533,3 +533,171 @@ class asn1Aanlyse:
         if len(retL) > 0:
             return bytes.fromhex("".join(retL))
         return None
+
+    def __splitTag(self, tag):
+        # Tag是一个或若干个八位组
+        # 最开始的8位，第7、6位指明Tag的类型，或操作，Universal:00（0x0）, APPLICATION:01（0x40）, CONTEXT_SPECIFIC:10（0x80）, PRIVATE:11（0xc0）
+        # 第5位指明该类型以primitive方式编码还是constructed方式编码，或操作，PRIMITIVE:0（0x0）, CONSTRUCTED:1（0x20）
+        # PRIMITIVE方式时，后面的Value就是值，CONSTRUCTED方式时，后面的Value是由TLV组成
+        # 后5位不全为1时，则表示tagvalue，全为1时，直到后面8位组的最高位为0，该tagvalue才结束
+        # tagvalue为各个8位组去掉最高位，由后7位依次组合而成
+        # 基本类型的Tag的值，例如INTEGER的Tag值是2,SEQUENCE型类Tag值是16
+        asnTag_class = None
+        asnTag_type = None
+        asnTag_value = None
+        if tag and re.search(r'[A-F0-9]+', tag.upper()):
+            binStr = bin(int(tag, base=16))[2:]
+            binLen = len(binStr)
+            binStr = binStr.zfill(int((binLen + 7) / 8) * 8)
+            binLen = len(binStr)
+            asnTag_class = self.tagClass[binStr[:2]]
+            asnTag_type = self.tagType[binStr[2]]
+            if binStr[3:8] == "11111":
+                if binLen < 9:
+                    return None, None, None
+                i = 8
+                while binStr[i] == '1':
+                    i = i + 8
+                    if binLen < i:
+                        return None, None, None
+                if i + 8 != binLen:
+                    return None, None, None
+
+                valueL = []
+                for j in range(8, binLen):
+                    if j % 8 != 0:
+                        valueL.append(binStr[j])
+                asnTag_value = int("".join(valueL), base=2)
+            else:
+                asnTag_value = int(binStr[3:], base=2)
+        return asnTag_class, asnTag_type, asnTag_value
+
+    def __calcTagLength(self, lenType, vLen):
+        # lenType:
+        # 0: 不定长
+        # 1: 定长
+        # Length指明Value部分所占8位组的个数（即字节数），分2类，定长和不定长。
+        # 定长分短和长形式，最高位为0，表示短形式，低7位表示长度；最高位为1，表示长形式，低7位表示的长度字段包含的字节数
+        # 不定长，长度字段固定为0x80，在Value字段结束后，以2个0x00结尾
+        # 算法上优先判断不定长，然后再分短和长形式
+        asnLength = None
+        asnLength_t = None
+        asnLength_b = None
+        asnLength_v = None
+        if lenType == 0:
+            asnLength = "80"
+            asnLength_t = 0
+            asnLength_v = vLen
+        elif lenType == 1 and vLen <= 127:
+            asnLength_t = 2
+            asnLength_v = vLen
+            asnLength = hex(vLen)[2:].zfill(2)
+        elif lenType == 1 and vLen > 127:
+            asnLength_t = 1
+            asnLength_v = vLen
+            asnLength_b = int((vLen + 255)/256)
+            asnLength = hex(int("1" + bin(asnLength_b)[2:].zfill(7), base=2))[2:].zfill(2) + hex(vLen)[2:].zfill(asnLength_b * 2)
+        return asnLength, asnLength_t, asnLength_b, asnLength_v
+
+    def __resetTagLenth(self, startNode):
+        if startNode.parent and startNode.parent.data.asnTag != "root":
+            tmpLen = 0
+            for n in startNode.parent.children:
+                tmpLen = tmpLen + n.data.asnLength_v
+            if tmpLen > 0:
+                lenType = 0
+                if startNode.parent.data.length_t in [1, 2]:
+                    lenType = 1
+                asnLength, asnLength_t, asnLength_b, asnLength_v = self.__calcTagLength(lenType, tmpLen)
+                startNode.parent.data.asnLength = asnLength
+                startNode.parent.data.asnLength_t = asnLength_t
+                startNode.parent.data.asnLength_b = asnLength_b
+                startNode.parent.data.asnLength_v = asnLength_v
+                self.__resetTagLenth(startNode.parent)
+    
+    def __resetOffset(self, inNode=None):
+        if inNode is None:
+            inNode = self.root.children[0]
+        if inNode.parent.data.asnTag == "root" and inNode.index == 0:
+            inNode.data.Offset = self.__fileHeadLen + self.__recordHeadLen
+        elif inNode.parent.data.asnTag == "root" and inNode.index != 0:
+            prevNode = inNode.parent.children[inNode.index - 1]
+            inNode.data.Offset = self.__recordHeadLen + len(prevNode.data.asnTag) + len(prevNode.data.asnLength) + prevNode.data.asnLength_v
+            if prevNode.data.asnLength_t == 0:
+                inNode.data.Offset = inNode.data.Offset + 3
+        elif inNode.index == 0:
+            prevNode = inNode.parent
+            inNode.data.Offset = len(prevNode.data.asnTag) + len(prevNode.data.asnLength)
+        else:
+            prevNode = inNode.parent.children[inNode.index - 1]
+            inNode.data.Offset = len(prevNode.data.asnTag) + len(prevNode.data.asnLength) + prevNode.data.asnLength_v
+            if prevNode.data.asnLength_t == 0:
+                inNode.data.Offset = inNode.data.Offset + 3
+        
+        for i in range(len(inNode.children)):
+            self.__resetTagLenth(inNode.children[i])
+
+    def modifyContent(self, inNode, nodeTag, action, valueDict):
+        '''
+        对目标树进行改动
+
+        :param inNode: 待操作的树
+
+        :param nodeTag: 目标结点的Tag值
+
+        :param action: 操作方式，0:添加，1:复制，2:修改，3:删除
+        0: 添加一个新的TLV结构，作为目标结点的子节点，针对constructed类型结点
+        1: 复制目标结点，作为其父结点的子节点
+        2: 修改目标结点的值，针对primitive类型结点
+        3: 删除目标结点
+
+        :param valueDict: 值的字典，0和2模式需要
+        action为0时，{"tag":"", "length_type":0/1, "value":""}，length_type：0 不定长；1 定长
+        action为1时，{"value":""}
+        value为16进制字符串
+        '''
+        if inNode and nodeTag and action in [0, 1, 2, 3]:
+            destNode = inNode.search(nodeTag)
+            if destNode:
+                if action == 0 and valueDict:
+                    tag = valueDict.get("tag")
+                    lenType = valueDict.get("length_type")
+                    value = valueDict.get("value")
+                    if tag and lenType and value:
+                        asnTag_class, asnTag_type, asnTag_value = self.__splitTag(tag)
+                        tmpLen = len(value)
+                        asnLength, asnLength_t, asnLength_b, asnLength_v = self.__calcTagLength(lenType, tmpLen)
+                        if asnTag_class and asnLength:
+                            tmpNode = treeNode(data=nodeData())
+                            tmpNode.data.asnTag = tag
+                            tmpNode.data.asnTag_class = asnTag_class
+                            tmpNode.data.asnTag_type = asnTag_type
+                            tmpNode.data.asnTag_value = asnTag_value
+                            tmpNode.data.asnLength = asnLength
+                            tmpNode.data.asnLength_t = asnLength_t
+                            tmpNode.data.asnLength_b = asnLength_b
+                            tmpNode.data.asnLength_v = asnLength_v
+                            destNode.insertNode(tmpNode)
+                if action == 1:
+                    tmpNode = copy.deepcopy(destNode)
+                    destNode.parent.insertNode(tmpNode)
+                if action == 2 and valueDict:
+                    value = valueDict.get("value")
+                    if value is not None:
+                        lenType = 0
+                        if destNode.data.length_t in [1, 2]:
+                            lenType = 1
+                        tmpLen = len(value)
+                        asnLength, asnLength_t, asnLength_b, asnLength_v = self.__calcTagLength(lenType, tmpLen)
+                        destNode.data.asnLength = asnLength
+                        destNode.data.asnLength_t = asnLength_t
+                        destNode.data.asnLength_b = asnLength_b
+                        destNode.data.asnLength_v = asnLength_v
+                        destNode.data.asnValue = value
+                if action == 3:
+                    parent = destNode.parent
+                    parent.removeNode(destNode)
+                    destNode = parent.children[-1]
+                self.__resetTagLenth(destNode)
+                self.__resetOffset()
+                        

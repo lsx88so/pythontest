@@ -1,0 +1,613 @@
+SDJ0{
+   "struct_0_MXdr::SXdr": {
+      "string_0__Marker": "45c1;5c1",
+      "int32_1_CHARGE_MODE": 0,
+      "struct_2_COMMON": {
+         "string_0__Marker": "440e04327018000:6008400",
+         "int64_1_SERVICE_ID": "53001",
+         "int64_2_DR_TYPE": "30107",
+         "int32_3_MNS_TYPE": 2,
+         "string_4_IMEI": "1234567890123456",
+         "list_5_ORI_CHARGE_size": 0,
+         "list_5_ORI_CHARGE": null,
+         "string_6_USER_NUMBER": "15010931092",
+         "int32_7_ACTION_TYPE": 0,
+         "string_8_IMSI": "460023103177932",
+         "int32_9_NUMBER_CLASS": 0,
+         "map_10_RESERVE_FIELDS_size": 0,
+         "map_10_RESERVE_FIELDS": null,
+         "string_11_VPLMN1": "100",
+         "string_12_VPLMN2": "100",
+         "int16_13_USER_OPERATOR_ID": 0,
+         "string_14_OPP_HPLMN2": "0",
+         "struct_15_GPRS_SPEC_INFO": {
+            "string_0__Marker": "617ffbf8",
+            "string_1_SGSN_ADDRESS": "C8DFC915",
+            "int32_2_TRIGGER_TYPE": 0,
+            "int32_3_MSNC": 1,
+            "string_4_RAC": "1",
+            "string_5_CHARGING_ID": "88845596",
+            "string_6_GGSN_ADDRESS": "C8DFC915",
+            "string_7_APN_NI": "CMNET",
+            "string_8_PDP_TYPE": "0001",
+            "string_9_PDP_ADDRESS": "C87C5F01",
+            "int32_10_CAUSE_CLOSE": 6,
+            "string_11_COMBINE_RESULT": "1",
+            "string_12_CHARGING_CHARACTERISTICS": "0800",
+            "string_13_CC_SELECTION_MODE": "0",
+            "string_14_SGSN_PLMN": "460f02",
+            "string_15_PARTIAL_TYPE_INDICATOR": "2",
+            "string_16_REC_SEQ_NO": "2",
+            "string_17_LOCAL_REC_SEQ_NO": "3370109205",
+            "string_18_SYSTEM_TYPE": "2",
+            "string_19_GGSN_ID": "963707e236f6d6",
+            "string_20_SERVICE_USAGE": "N2000000002",
+            "list_21_TARIFF_QCS_LIST_size": 3,
+            "list_21_TARIFF_QCS_LIST": [
+               {
+                  "string_0__Marker": "ffff",
+                  "string_1_TARIFF": "N",
+                  "string_2_TARIFF_SEQ_ID": "0",
+                  "int16_3_QOS_REQ_RELIABILITY": 0,
+                  "int16_4_QOS_REQ_DELAY": 0,
+                  "int16_5_QOS_REQ_PRECEDENCE": 0,
+                  "int16_6_QOS_REQ_PEAK": 0,
+                  "int16_7_QOS_REQ_MEAN": 0,
+                  "int16_8_QOS_NEG_RELIABILITY": 0,
+                  "int16_9_QOS_NEG_DELAY": 0,
+                  "int16_10_QOS_NEG_PRECEDENCE": 0,
+                  "int16_11_QOS_NEG_PEAK": 0,
+                  "int16_12_QOS_NEG_MEAN": 0,
+                  "int64_13_DATA_FLOW_UP": "4004",
+                  "int64_14_DATA_FLOW_DOWN": "10234",
+                  "int64_15_BEGIN_TIME": "20190413145347",
+                  "int64_16_TARIFF_DURATION": "41"
+               },
+               {
+                  "string_0__Marker": "bffe",
+                  "string_1_TARIFF_SEQ_ID": "0",
+                  "int16_2_QOS_REQ_RELIABILITY": 0,
+                  "int16_3_QOS_REQ_DELAY": 0,
+                  "int16_4_QOS_REQ_PRECEDENCE": 0,
+                  "int16_5_QOS_REQ_PEAK": 0,
+                  "int16_6_QOS_REQ_MEAN": 0,
+                  "int16_7_QOS_NEG_RELIABILITY": 0,
+                  "int16_8_QOS_NEG_DELAY": 0,
+                  "int16_9_QOS_NEG_PRECEDENCE": 0,
+                  "int16_10_QOS_NEG_PEAK": 0,
+                  "int16_11_QOS_NEG_MEAN": 0,
+                  "int64_12_DATA_FLOW_UP": "0",
+                  "int64_13_DATA_FLOW_DOWN": "0",
+                  "int64_14_TARIFF_DURATION": "0"
+               },
+               {
+                  "string_0__Marker": ""
+               }
+            ],
+            "struct_22_GPRS_WLAN_INFO": {
+               "string_0__Marker": ""
+            }
+         },
+         "int32_16_U_SEPARATE_FLAG": 0,
+         "string_17_DR_TYPE_DESC": "dr_ps",
+         "int64_18_CONTROL_TAG_FOR_MODULE": "274877911040"
+      },
+      "struct_3_TOTAL_XDR": {
+         "string_0__Marker": "7",
+         "struct_1_SUB_COMMON": {
+            "string_0__Marker": "4052080b80225009:78fe7e71f62004d9:12c00a0041d03",
+            "struct_1_FILE_OP_INFO": {
+               "string_0__Marker": "17",
+               "string_1_INPUT_FILE_NAME": "pgwcdr_5G.dat.merge.test2.1",
+               "string_2_ORIGINAL_FILE": "pgwcdr_5G.dat",
+               "string_3_XDR_OUT_POSTFIX": "",
+               "int32_4_TREAT_FLAG": 0
+            },
+            "int32_2_U_FLAG": 0,
+            "string_3_LAC_ID": "4321",
+            "string_4_CELL_ID": "1abcdef|1100",
+            "int64_5_START_TIME": "20190413145347",
+            "string_6_SERVICE_CODE": "999999",
+            "int64_7_DURATION": "41",
+            "int64_8_OCTECT": "0",
+            "int64_9_UP_VOLUME": "4004",
+            "int64_10_DOWN_VOLUME": "10234",
+            "string_11_SERVICE_TYPE": "001",
+            "int32_12_BILL_FLAG": 2,
+            "int32_13_RECORD_TYPE": 2,
+            "int32_14_REDO_FLAG": 0,
+            "int32_15_RATING_FLAG": 0,
+            "int32_16_ORI_RATING_FLAG": 30107,
+            "int32_17_RATE_STRATEGY": 1,
+            "int32_18_RATE_BUDGET_RES": 30000,
+            "int32_19_CONDITION_ID": 20100001,
+            "int64_20_PRODUCT_ID": "60001001",
+            "int16_21_ROAM_TYPE": 0,
+            "int16_22_NETCALL_FLAG": 0,
+            "struct_23_USER_BASE_INFO": {
+               "string_0__Marker": "100ffffffef",
+               "int32_1_CUST_TYPE": 0,
+               "int64_2_CUST_ID": "21100051895852",
+               "int64_3_ACC_ID": "30100051905320",
+               "int64_4_USER_ID": "47100006737516",
+               "int64_5_BILLABLE_ACC_ID": "30100051905320",
+               "int32_6_USER_TYPE": 0,
+               "int32_7_LISTEN_LANGUAGE": 0,
+               "int32_8_READ_LANGUAGE": 0,
+               "int32_9_BRAND": 4,
+               "int32_10_CUST_BIRTHDAY_FLAG": 0,
+               "int32_11_CUST_GENDER": 0,
+               "int32_12_CUST_JOBCODE": 0,
+               "int32_13_USER_LIFE_CYCLE": 10000001,
+               "int32_14_CUST_AGING": 591,
+               "int32_15_ACC_AGING": 25,
+               "int32_16_USER_AGING": 25,
+               "string_17_FIRST_ACTIVATE_FLAG": "0",
+               "int64_18_CREATE_DATE": "20170308004400",
+               "string_19_HPLMN1": "100",
+               "string_20_HPLMN2": "100",
+               "string_21_HPLMN3": "",
+               "int32_22_CUSTOMER_SEGMENT": 0,
+               "int32_23_USER_SEGMENT": 4,
+               "int32_24_USER_CYCLE_EXPIRE_DATE": 2145887999,
+               "struct_25_EXEMPT_TYPE": {
+                  "string_0__Marker": "3",
+                  "int32_1_BILLING_TYPE": -999,
+                  "int32_2_EXEMPT_TYPE": 0
+               },
+               "int64_26_NEXT_USER_CYCLE": "10000001",
+               "int64_27_NEXT_USER_CYCLE_EXPIRE_DATE": "2145887999",
+               "int32_28_CUST_CLASS": 0,
+               "int64_29_BILL_BEGIN_DATE": "20190601000000",
+               "int64_30_BILL_END_DATE": "20190701000000",
+               "struct_31_ACCT_BILL_CYCLE": {
+                  "string_0__Marker": "3f",
+                  "int16_1_CYCLE_UNIT": 1,
+                  "int16_2_CYCLE_TYPE": 5,
+                  "int64_3_FIRST_BILL_DATE": "20181001000000",
+                  "int64_4_BILL_VALID_DATE": "19990101000000",
+                  "int64_5_BILL_EXPIRE_DATE": "20371231235959",
+                  "int32_6_CYCLE_COUNT": 0
+               },
+               "int32_32_USER_SPEC_TYPE": 0
+            },
+            "map_24_RATE_PROD_ID_size": 2,
+            "map_24_RATE_PROD_ID": [
+               "140003908657979",
+               {
+                  "string_0__Marker": "6ff",
+                  "int32_1_OFFER_PROD_ID": 50001843,
+                  "int32_2_PROD_SPEC_TYPE": 101,
+                  "int32_3_PROD_TYPE": 3,
+                  "int32_4_SUITABLE_NET": -1,
+                  "int64_5_GROUP_ACC_ID": "-1",
+                  "int32_6_OPP_GROUP_ID": -1,
+                  "int64_7_VALID_DATE_TIME": "20170602140107",
+                  "int64_8_EXPIRE_DATE_TIME": "20371231235959",
+                  "map_9_GROUP_PROM_SPEC_MAP_size": 1,
+                  "map_9_GROUP_PROM_SPEC_MAP": [
+                     "1973771159",
+                     {
+                        "map_1__Val_size": 1,
+                        "map_2__Val": [
+                           0,
+                           {
+                              "string_0__Marker": "3",
+                              "int32_1_KEY": 0,
+                              "string_2_VALUE": "0"
+                           }
+                        ]
+                     }
+                  ],
+                  "int32_10_BILL_TYPE": 1
+               },
+               "141234567891234",
+               {
+                  "string_0__Marker": "6ff",
+                  "int32_1_OFFER_PROD_ID": 60001001,
+                  "int32_2_PROD_SPEC_TYPE": 101,
+                  "int32_3_PROD_TYPE": 1,
+                  "int32_4_SUITABLE_NET": -1,
+                  "int64_5_GROUP_ACC_ID": "-1",
+                  "int32_6_OPP_GROUP_ID": -1,
+                  "int64_7_VALID_DATE_TIME": "20170308004400",
+                  "int64_8_EXPIRE_DATE_TIME": "20371231235959",
+                  "map_9_GROUP_PROM_SPEC_MAP_size": 0,
+                  "map_9_GROUP_PROM_SPEC_MAP": null,
+                  "int32_10_BILL_TYPE": 1
+               }
+            ],
+            "map_25_RATE_PROD_BILL_CYCLE_size": 0,
+            "map_25_RATE_PROD_BILL_CYCLE": null,
+            "list_26_RATE_PROD_QUOTA_RES_size": 0,
+            "list_26_RATE_PROD_QUOTA_RES": null,
+            "int32_27_SYS_QUOTA_RES": 30000,
+            "list_28_RATING_RES_size": 3,
+            "list_28_RATING_RES": [
+               {
+                  "string_0__Marker": "7",
+                  "int32_1_MEASURE_ID": 109,
+                  "int64_2_BEGIN_RES": "0",
+                  "int64_3_AMOUNT_RES": "1"
+               },
+               {
+                  "string_0__Marker": "7",
+                  "int32_1_MEASURE_ID": 103,
+                  "int64_2_BEGIN_RES": "0",
+                  "int64_3_AMOUNT_RES": "14238"
+               },
+               {
+                  "string_0__Marker": "7",
+                  "int32_1_MEASURE_ID": 102,
+                  "int64_2_BEGIN_RES": "0",
+                  "int64_3_AMOUNT_RES": "41"
+               }
+            ],
+            "map_29_RATE_PROD_ZONE_size": 0,
+            "map_29_RATE_PROD_ZONE": null,
+            "map_30_PROPERTY_VAL_MIN_size": 0,
+            "map_30_PROPERTY_VAL_MIN": null,
+            "map_31_REJECT_CALL_ALARM_MAP_size": 0,
+            "map_31_REJECT_CALL_ALARM_MAP": null,
+            "list_32_ACCUMULATE_ALARM_LIST_size": 0,
+            "list_32_ACCUMULATE_ALARM_LIST": null,
+            "list_33_GROUP_ACCT_PAYMENT_size": 0,
+            "list_33_GROUP_ACCT_PAYMENT": null,
+            "list_34_GROUP_FREEBIE_PAYMENT_size": 0,
+            "list_34_GROUP_FREEBIE_PAYMENT": null,
+            "list_35_CAP_MAX_size": 0,
+            "list_35_CAP_MAX": null,
+            "list_36_GROUP_BUDGET_size": 0,
+            "list_36_GROUP_BUDGET": null,
+            "list_37_GROUP_RELATION_TYPE_size": 0,
+            "list_37_GROUP_RELATION_TYPE": null,
+            "list_38_GROUP_SPEC_SHARE_size": 0,
+            "list_38_GROUP_SPEC_SHARE": null,
+            "list_39_CELL_CODE_size": 0,
+            "list_39_CELL_CODE": null,
+            "list_40_OPP_CELL_CODE_size": 0,
+            "list_40_OPP_CELL_CODE": null,
+            "list_41_RATE_PROD_PRICE_PLAN_size": 0,
+            "list_41_RATE_PROD_PRICE_PLAN": null,
+            "struct_42_HYBRID_RULE_DEF": {
+               "string_0__Marker": "1f",
+               "int64_1_DONE_CODE": "0",
+               "int32_2_HYBRID_RULE_TYPE": 1,
+               "int32_3_HYBRID_RULE_ID": 1,
+               "int64_4_THRESHOLD": "0",
+               "int32_5_MONITOR_CDR": 1
+            },
+            "map_43_SERVICE_INFO_MAP_size": 0,
+            "map_43_SERVICE_INFO_MAP": null,
+            "map_44_USER_GROUP_size": 0,
+            "map_44_USER_GROUP": null,
+            "map_45_MAX_TIME_PROM_SPEC_MAP_size": 0,
+            "map_45_MAX_TIME_PROM_SPEC_MAP": null,
+            "map_46_FREEBIE_PROMOTED_RULE_size": 0,
+            "map_46_FREEBIE_PROMOTED_RULE": null,
+            "map_47_BORDER_ROAM_INFO_MAP_size": 0,
+            "map_47_BORDER_ROAM_INFO_MAP": null,
+            "int16_48_BORDER_ROAM_TYPE": 0,
+            "struct_49_OUT_RATING_FEC": {
+               "string_0__Marker": "13f00",
+               "int64_1_VT": "1300",
+               "int64_2_VQT": "20971520",
+               "int64_3_TQT": "-1",
+               "int64_4_QHT": "-1",
+               "int64_5_QCT": "-1",
+               "int32_6_IN_RELEASE_DEAL": 0,
+               "struct_7_OCS_REJECT_CAUSE": {
+                  "string_0__Marker": ""
+               }
+            },
+            "struct_50_OUT_IN_FEC": {
+               "string_0__Marker": "dff",
+               "list_1_TRANSFORM_FREERES_INFO_size": 2,
+               "list_1_TRANSFORM_FREERES_INFO": [
+                  {
+                     "string_0__Marker": "ff",
+                     "int64_1_DONE_CODE": "140003908657979",
+                     "int32_2_FREERES_ITEM_ID": 66661030,
+                     "int32_3_ITEM_ID": 45000002,
+                     "int64_4_ASSET_VALUE": "0",
+                     "int64_5_RESOURCE_VALUE": "0",
+                     "int64_6_VALID_DATE": "20190301000000",
+                     "int64_7_EXPIRE_DATE": "20190401000000",
+                     "int32_8_FREERES_TYPE": 0
+                  },
+                  {
+                     "string_0__Marker": "ff",
+                     "int64_1_DONE_CODE": "140003908657979",
+                     "int32_2_FREERES_ITEM_ID": 66661082,
+                     "int32_3_ITEM_ID": 45000002,
+                     "int64_4_ASSET_VALUE": "14336",
+                     "int64_5_RESOURCE_VALUE": "14336",
+                     "int64_6_VALID_DATE": "20190301000000",
+                     "int64_7_EXPIRE_DATE": "20190401000000",
+                     "int32_8_FREERES_TYPE": 0
+                  }
+               ],
+               "list_2_AFTER_MAKECALL_INFO_size": 0,
+               "list_2_AFTER_MAKECALL_INFO": null,
+               "list_3_ZONE_ALERT_LIST_size": 0,
+               "list_3_ZONE_ALERT_LIST": null,
+               "list_4_PACKAGE_ALERT_LIST_size": 0,
+               "list_4_PACKAGE_ALERT_LIST": null,
+               "list_5_ASSET_ALERT_LIST_size": 0,
+               "list_5_ASSET_ALERT_LIST": null,
+               "list_6_AOC_ASSET_LIST_size": 0,
+               "list_6_AOC_ASSET_LIST": null,
+               "list_7_URL_ASSET_LIST_size": 0,
+               "list_7_URL_ASSET_LIST": null,
+               "list_8_URL_ACCUMULATE_ALARM_size": 0,
+               "list_8_URL_ACCUMULATE_ALARM": null,
+               "list_9_AOC_ACCUMULATE_ALARM_size": 0,
+               "list_9_AOC_ACCUMULATE_ALARM": null,
+               "list_10_ACCUMULATE_PRICE_ADJUST_INFO_size": 0,
+               "list_10_ACCUMULATE_PRICE_ADJUST_INFO": null,
+               "map_11_PRE_STD_CHARGING_INFO_size": 1,
+               "map_11_PRE_STD_CHARGING_INFO": [
+                  45000002,
+                  {
+                     "string_0__Marker": "1f",
+                     "int64_1_ORI_START_RES": "14336",
+                     "int64_2_INTER_START_RES": "14336",
+                     "int32_3_CHARGING_UNIT": 1024,
+                     "int32_4_MEASURE_ID": 103,
+                     "int64_5_STANDARD_PRODUCT_ID": "141234567891234"
+                  }
+               ]
+            },
+            "struct_51_RATING_OUT": {
+               "string_0__Marker": "938fffffff",
+               "int32_1_APP_TYPE": 2,
+               "int32_2_APP_QUOTA_ID": 30000,
+               "int64_3_PROCESS_TIME": "20190624180720",
+               "list_4_CHARGE_size": 1,
+               "list_4_CHARGE": [
+                  {
+                     "string_0__Marker": "3f",
+                     "int32_1_CHANGE_ITEM_ID": 45000002,
+                     "int32_2_ITEM_TYPE": 0,
+                     "int64_3_FEE": "0",
+                     "int64_4_REDUCE_FEE": "140",
+                     "int32_5_MEASURE_ID": 10402,
+                     "int64_6_STANDARD_PRODUCT_ID": "141234567891234"
+                  }
+               ],
+               "list_5_STD_TARIFF_CHARGE_size": 1,
+               "list_5_STD_TARIFF_CHARGE": [
+                  {
+                     "string_0__Marker": "3f",
+                     "int32_1_CHANGE_ITEM_ID": 45000002,
+                     "int32_2_ITEM_TYPE": 0,
+                     "int64_3_FEE": "140",
+                     "int64_4_REDUCE_FEE": "0",
+                     "int32_5_MEASURE_ID": 10402,
+                     "int64_6_STANDARD_PRODUCT_ID": "141234567891234"
+                  }
+               ],
+               "list_6_DISCOUNT_FEE_size": 0,
+               "list_6_DISCOUNT_FEE": null,
+               "list_7_TAX_CHARGE_size": 0,
+               "list_7_TAX_CHARGE": null,
+               "list_8_FREE_RES_DISCOUNT_FEE_size": 1,
+               "list_8_FREE_RES_DISCOUNT_FEE": [
+                  {
+                     "string_0__Marker": "3ff",
+                     "int64_1_DONE_CODE": "140003908657979",
+                     "int32_2_FREERES_ITEM_ID": 66661082,
+                     "int32_3_FREE_RES_TYPE": 0,
+                     "int64_4_VALID_DATE_TIME": "20190301000000",
+                     "int64_5_EXPIRE_DATE_TIME": "20190401000000",
+                     "int64_6_THIS_TIME_USED": "14336",
+                     "int64_7_STANDARD_PRODUCT_ID": "141234567891234",
+                     "int32_8_CHANGE_ITEM_ID": 45000002,
+                     "int32_9_MEASURE_ID": 10402,
+                     "int64_10_REDUCE_FEE": "140"
+                  }
+               ],
+               "list_9_FREE_RES_CHARGE_VAL_size": 1,
+               "list_9_FREE_RES_CHARGE_VAL": [
+                  {
+                     "string_0__Marker": "7f",
+                     "int64_1_DONE_CODE": "140003908657979",
+                     "int32_2_FREERES_ITEM_ID": 66661082,
+                     "int32_3_FREE_RES_TYPE": 3000,
+                     "int64_4_VALID_DATE_TIME": "20190301000000",
+                     "int64_5_EXPIRE_DATE_TIME": "20190401000000",
+                     "int64_6_THIS_TIME_USED": "14336",
+                     "int64_7_THIS_TIME_FREEZED": "0"
+                  }
+               ],
+               "list_10_FREE_RES_CREATOR_size": 0,
+               "list_10_FREE_RES_CREATOR": null,
+               "list_11_ADDUP_RES_QUERY_VAL_size": 0,
+               "list_11_ADDUP_RES_QUERY_VAL": null,
+               "list_12_ADDUP_RES_USING_VAL_size": 0,
+               "list_12_ADDUP_RES_USING_VAL": null,
+               "list_13_ADDUP_RES_QUERY_VAL_PRICERULE_size": 0,
+               "list_13_ADDUP_RES_QUERY_VAL_PRICERULE": null,
+               "list_14_ADDUP_RES_USING_VAL_PRICERULE_size": 0,
+               "list_14_ADDUP_RES_USING_VAL_PRICERULE": null,
+               "list_15_FREERES_QUERY_VAL_size": 2,
+               "list_15_FREERES_QUERY_VAL": [
+                  {
+                     "string_0__Marker": "3fef",
+                     "int64_1_ACCT_ID": "30100051905320",
+                     "int64_2_OWNER_ID": "47100006737516",
+                     "int32_3_OWNER_TYPE": 0,
+                     "int64_4_DONE_CODE": "140003908657979",
+                     "int32_5_PRICE_ID": 133010037,
+                     "int32_6_FREERES_ITEM_ID": 66661082,
+                     "int32_7_FREE_RES_TYPE": 0,
+                     "int32_8_MEASURE_ID": 103,
+                     "int64_9_VALID_DATE_TIME": "20190401000000",
+                     "int64_10_EXPIRE_DATE_TIME": "20190501000000",
+                     "int64_11_FREE_RES_LIMIT": "4294967296",
+                     "int64_12_FREE_RES_USED": "0",
+                     "int64_13_FREE_RES_FREEZE": "0"
+                  },
+                  {
+                     "string_0__Marker": "3fef",
+                     "int64_1_ACCT_ID": "30100051905320",
+                     "int64_2_OWNER_ID": "47100006737516",
+                     "int32_3_OWNER_TYPE": 0,
+                     "int64_4_DONE_CODE": "140003908657979",
+                     "int32_5_PRICE_ID": 133010037,
+                     "int32_6_FREERES_ITEM_ID": 66661082,
+                     "int32_7_FREE_RES_TYPE": 0,
+                     "int32_8_MEASURE_ID": 103,
+                     "int64_9_VALID_DATE_TIME": "20190301000000",
+                     "int64_10_EXPIRE_DATE_TIME": "20190401000000",
+                     "int64_11_FREE_RES_LIMIT": "4294967296",
+                     "int64_12_FREE_RES_USED": "28672",
+                     "int64_13_FREE_RES_FREEZE": "0"
+                  }
+               ],
+               "list_16_CREDIT_QUERY_VAL_size": 0,
+               "list_16_CREDIT_QUERY_VAL": null,
+               "list_17_BOOK_QUERY_VAL_size": 0,
+               "list_17_BOOK_QUERY_VAL": null,
+               "list_18_BOOK_CHARGE_VAL_size": 0,
+               "list_18_BOOK_CHARGE_VAL": null,
+               "list_19_CREDIT_CHARGE_VAL_size": 0,
+               "list_19_CREDIT_CHARGE_VAL": null,
+               "list_20_FREERES_LIMIT_QUERY_VAL_size": 0,
+               "list_20_FREERES_LIMIT_QUERY_VAL": null,
+               "list_21_CAP_MAX_VAL_size": 0,
+               "list_21_CAP_MAX_VAL": null,
+               "list_22_BUDGET_VAL_size": 0,
+               "list_22_BUDGET_VAL": null,
+               "list_23_PAYFOR_VAL_size": 0,
+               "list_23_PAYFOR_VAL": null,
+               "list_24_VALID_RATE_PROD_ID_size": 1,
+               "list_24_VALID_RATE_PROD_ID": [
+                  {
+                     "string_0__Marker": "f",
+                     "int32_1_CHANGE_ITEM_ID": 45000002,
+                     "int64_2_DONE_CODE": "141234567891234",
+                     "int32_3_PRICE_ID": 50001000,
+                     "int32_4_RATE_ID": 2200010
+                  }
+               ],
+               "list_25_PRICE_TRACE_size": 1,
+               "list_25_PRICE_TRACE": [
+                  {
+                     "string_0__Marker": "7",
+                     "int32_1_CHANGE_ITEM_ID": 45000002,
+                     "int64_2_DONE_CODE": "141234567891234",
+                     "int32_3_PRICE_ID": 50001000
+                  }
+               ],
+               "list_26_PRE_PAY_BILL_DTL_size": 0,
+               "list_26_PRE_PAY_BILL_DTL": null,
+               "list_27_STD_UNIT_size": 1,
+               "list_27_STD_UNIT": [
+                  {
+                     "string_0__Marker": "7f",
+                     "int32_1_ITEM_ID": 45000002,
+                     "int32_2_CYCLE_UNIT": 1,
+                     "int32_3_RES_MEASURE_ID": 104,
+                     "int64_4_STD_BEGIN_RES": "0",
+                     "int64_5_STD_RES": "14",
+                     "int64_6_STD_UNIT": "14",
+                     "int64_7_STANDARD_PRODUCT_ID": "141234567891234"
+                  }
+               ],
+               "list_28_FINAL_STD_UNIT_size": 1,
+               "list_28_FINAL_STD_UNIT": [
+                  {
+                     "string_0__Marker": "7f",
+                     "int32_1_ITEM_ID": 45000002,
+                     "int32_2_CYCLE_UNIT": 1,
+                     "int32_3_RES_MEASURE_ID": 104,
+                     "int64_4_STD_BEGIN_RES": "0",
+                     "int64_5_STD_RES": "0",
+                     "int64_6_STD_UNIT": "0",
+                     "int64_7_STANDARD_PRODUCT_ID": "141234567891234"
+                  }
+               ],
+               "list_29_MARKUP_CHARGE_size": 0,
+               "list_29_MARKUP_CHARGE": null,
+               "list_30_RATE_PROD_PRICE_size": 0,
+               "list_30_RATE_PROD_PRICE": null,
+               "struct_31_HYBRID_RN": {
+                  "string_0__Marker": "7",
+                  "int32_1_MONITOR_CDR": 1,
+                  "int32_2_BILLING_TYPE": 0,
+                  "int32_3_PAYFOR_BILLING_TYPE": 0
+               },
+               "list_32_UNDEDUCT_FEE_size": 0,
+               "list_32_UNDEDUCT_FEE": null,
+               "list_33_CHARGE_CONVERTED_size": 1,
+               "list_33_CHARGE_CONVERTED": [
+                  {
+                     "string_0__Marker": "7f",
+                     "int32_1_BILLING_ITEM_ID": 88000661,
+                     "int64_2_FEE": "0",
+                     "int64_3_REDUCE_FEE": "140",
+                     "int32_4_MEASURE_ID": 10402,
+                     "int64_5_STANDARD_PRODUCT_ID": "141234567891234",
+                     "int32_6_ACCUMULATE_MEASURE_ID": 0,
+                     "int64_7_ACCUMULATE_VALUE": "0"
+                  }
+               ]
+            },
+            "string_52_RESERVE2": "4004,10234",
+            "string_53_RESERVE4": "",
+            "map_54_RESERVE_FIELDS_size": 13,
+            "map_54_RESERVE_FIELDS": [
+               "CDR_EXT_TYPE",
+               "01",
+               "CDR_SUB_EXT_TYPE",
+               "03",
+               "CDR_TIME",
+               "3145347",
+               "CELLPRODFLAG",
+               "1",
+               "HAS_DISC",
+               "1",
+               "IMEI_ALARM",
+               "-1",
+               "MAIN_NOCLEAR_FLAG",
+               "0",
+               "NOCLEAR_FLAG",
+               "1",
+               "PS_SERVICE_CODE",
+               "2000000002",
+               "STS_DTL",
+               "0",
+               "SUM_TYPE",
+               "0",
+               "VOLUME_5G",
+               "71680",
+               "XDRCLONED_CDR_NO",
+               "1"
+            ],
+            "int64_55_BILL_DATE": "20190624",
+            "list_56_SLA_RULE_size": 0,
+            "list_56_SLA_RULE": null,
+            "string_57_FCITYPE": "0",
+            "list_58_RG_RULE_LIST_size": 0,
+            "list_58_RG_RULE_LIST": null,
+            "int64_59_TIME_WINDOW": "20190624180720",
+            "int64_60_OCS_MONITOR_CDR": "0",
+            "int16_61_CDR_QUERY_FLAG": 4,
+            "int64_62_BATCH_NO": "0"
+         },
+         "struct_2_GSM_INFO": {
+            "string_0__Marker": ""
+         },
+         "struct_3_GPRS_INFO": {
+            "string_0__Marker": "c",
+            "int32_1_APNNI_ID": 1,
+            "int32_2_RG_TYPE": 9999
+         }
+      },
+      "map_4_SUB_XDR_MAP_size": 0,
+      "map_4_SUB_XDR_MAP": null,
+      "map_5_RGG_XDR_MAP_size": 0,
+      "map_5_RGG_XDR_MAP": null
+   }
+}
