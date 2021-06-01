@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys, re, os, copy, time
-import string, base64, hashlib
+import string, base64, hashlib, uuid
 from urllib import parse
 
 #ALPHA = string.digits + string.ascii_uppercase + string.ascii_lowercase + '+' + '/'
@@ -158,6 +158,9 @@ def hexToAsc(instr):
 def ascToHex(instr):
     return str(instr.encode("utf-8").hex())
 
+def getuuid():
+    return uuid.uuid4()
+
 if __name__ == "__main__":
     #print(hexToAsc("616263"))
     #print(ascToHex("abc"))
@@ -168,8 +171,9 @@ if __name__ == "__main__":
     #print(url_encode(instr))
     #print(url_decode(instr1))
     #print(toTimeStr("1606927203"))
-    print(toTimestamp("2020-12-03 17:25:25"))
+    #print(toTimestamp("2020-12-03 17:25:25"))
     #print(time.time())
     #print(convertDecimal(12))
     #print(base64_encode("Nsmdb*1"))
     #print(base64_decode("TnNtZGIqMQ=="))
+    print(getuuid())
